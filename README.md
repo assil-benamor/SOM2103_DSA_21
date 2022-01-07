@@ -66,13 +66,13 @@
 <!-- ROADMAP -->
 ## Roadmap
 
-- [] Aggregation
-    - [ ] Select multiple
+- [ ] Aggregation
+    - [x] Select multiple
     - [ ] Select one
-    - [x] Numerical
-- [] Indicators
-- [] Output production
-    - [] Results table
+    - [ ] Numerical
+- [ ] Indicators
+- [ ] Output production
+    - [ ] Results table
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
