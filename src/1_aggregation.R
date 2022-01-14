@@ -2,6 +2,7 @@ rm(list = ls())
 
 if (!require("pacman")) install.packages("pacman") 
 
+
 p_load(rio,
        tidyverse,
        koboquest,
@@ -13,7 +14,7 @@ p_load(rio,
 source("./src/functions/aggregation_script_functions.R")
 
 
-##### Loading dataset and preprocessing ##### 
+##### Loading dataset and pre-processing ##### 
 
 ## Loading the dataset and questionnaire
 files.list <- list()
@@ -28,7 +29,6 @@ questions <-  import(files.list$kobo,sheet="survey") %>% select(-1) %>% filter(!
 ## Deleting empty variables if any 
 data <- mutate_if(data, is.character, na_if, "")  
 data <- data %>% select_if(~ !(all(is.na(.x))))
-
 
 
 
@@ -83,7 +83,12 @@ select_multiple <- data %>%
 aggregation_output_select_multiple <- data %>% group_by(.dots =aggregation_columns) %>% 
   dplyr::summarize_at(.vars = select_multiple,.funs = max, na.rm=T)
 
-aggregation_output_select_multiple[aggregation_output_select_multiple == -Inf] <- 0
+#   aggregation_output_select_multiple <- 
+#   data %>% group_by(.dots =aggregation_columns) %>%
+#   mutate_at(select_multiple,function(x) {ifelse(is.na(x),0,x)}) %>% select(select_multiple) %>% View()
+#   
+
+aggregation_output_select_multiple[aggregation_output_select_multiple == -Inf] <- as.numeric(NA) #0 # change to as.numeric(NA)
 
 aggregation_output_select_multiple <- select_multiple_apply_constraints(aggregation_output_select_multiple)
 
@@ -106,7 +111,7 @@ rm(list = c("aggregation_output_select_multiple",
 
 ## Creating a list of questions for each aggregation type 
 
-select_one_mode <- import("input/aggregation/master_list.xlsx") %>% 
+select_one_mode <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
   filter(`Include question`=="yes") %>% 
   filter(type=="select_one") %>% 
   filter(`Aggregation : all / subset`== "all") %>% 
@@ -339,6 +344,7 @@ all_questions_output <- all_questions_output %>%
                                   aap_feedbackmechanism != "yes", NA),
     
   )
+
 
 
 
