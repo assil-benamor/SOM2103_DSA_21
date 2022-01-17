@@ -68,7 +68,7 @@
 
 - [ ] Aggregation
     - [x] Select multiple
-    - [ ] Select one
+    - [x] Select one
     - [ ] Numerical
 - [ ] Indicators
 - [ ] Output production

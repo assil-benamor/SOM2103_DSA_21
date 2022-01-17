@@ -1,4 +1,8 @@
 
+
+
+
+
 generate_from_binaries <- function(data,select_multiple_questions) {
   
   do.call("cbind",map(select_multiple_questions,function(question_name,data) {
@@ -11,8 +15,8 @@ generate_from_binaries <- function(data,select_multiple_questions) {
   },data)) 
 }
 
-
 fn_select_one_mode <- function(x) {
+ 
   if(all(is.na(x))){return(NA)}
 
   uniqx <- unique(na.omit(x))
@@ -48,7 +52,6 @@ is.nan.data.frame <- function(x) do.call(cbind, lapply(x, is.nan))
 
 fn_select_one_mode_subset <- function(x,subset_var=NULL,role=NULL) {
   if(all(is.na(x))){return(NA)}
- 
   
   if (hasArg(subset_var) & hasArg(role)) {
     
@@ -81,7 +84,6 @@ one_sd_mean_subset <- function(x,subset_var=NULL,role=NULL) {
   }
   ceiling(mean(x[abs(x - mean(x)) < sd(x)]))
 }
-
 
 select_multiple_apply_constraints <- function(df) {
   
@@ -400,4 +402,44 @@ select_multiple_apply_constraints <- function(df) {
   return(df)
 }
 
+fn_select_one_mode_nc_correction <- function(x,subset_var=NULL,role=NULL) {
+  
+  if(all(is.na(x))){return(NA)}
+  
+  if (fn_select_one_mode(x) != 'NC') {
+    return(fn_select_one_mode(x))
+  }
+  
+  if (hasArg(subset_var) & hasArg(role)) {
+    
+    if(length(which(subset_var %in% role))!=0) {
+      x <- x[which(subset_var %in% role)]
+    }
+    
+  }
+  
+  
+  uniqx <- unique(na.omit(x))
+  uniqx[which.max(tabulate(match(x, uniqx)))]
+  
+}
 
+fn_select_one_yes_prevalence_nc_correction <- function(x,subset_var=NULL,role=NULL) {
+  
+  if(all(is.na(x))){return(NA)}
+  
+  ifelse(any(x=="yes"), 
+         "yes",
+         fn_select_one_mode_nc_correction(x, subset_var = subset_var, role = role))
+  
+}
+
+fn_select_one_no_prevalence <- function(x) {
+  
+  if(all(is.na(x))){return(NA)}
+  
+  ifelse(any(x=="no"), 
+         "no",
+         fn_select_one_mode(x))
+  
+}

@@ -49,10 +49,7 @@ data[multipleSelectQuestions] <- sapply(data[multipleSelectQuestions],as.numeric
 
 # data [data == 999] <- NA
 # data [data == ""] <- NA
-# data [data == "dnk"] <- NA
-
-
-site_leadership <- c("site_manager", "comm_leader", "local_govt_rep", "ngo_rep", "gatekeeper") # may be change 
+data [data == "dnk"] <- NA
 
 
 ## Cleaning the env
@@ -64,7 +61,7 @@ rm(list = c("listOfNumericQuestions",
 
 
 ################### Data Aggregation ###################*
-aggregation_columns <- "idp_code"
+aggregation_column <- "idp_code"
 ################### ################### ################*
 
 ##### Select multiple aggregation ##### 
@@ -79,14 +76,10 @@ select_multiple <- data %>%
   select(starts_with(paste0(select_multiple_questions,"."))) %>% colnames()
 
 
-## Using max function to include all the selected choices for the differnet questions  
-aggregation_output_select_multiple <- data %>% group_by(.dots =aggregation_columns) %>% 
+## Using max function to include all the selected choices for the different questions  
+aggregation_output_select_multiple <- data %>% group_by(.dots =aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_multiple,.funs = max, na.rm=T)
 
-#   aggregation_output_select_multiple <- 
-#   data %>% group_by(.dots =aggregation_columns) %>%
-#   mutate_at(select_multiple,function(x) {ifelse(is.na(x),0,x)}) %>% select(select_multiple) %>% View()
-#   
 
 aggregation_output_select_multiple[aggregation_output_select_multiple == -Inf] <- as.numeric(NA) #0 # change to as.numeric(NA)
 
@@ -102,44 +95,207 @@ aggregation_output_select_multiple <- cbind(generate_from_binaries(aggregation_o
 select_multiple_output <- aggregation_output_select_multiple %>% select(any_of(data %>% select(starts_with(sm_list)) %>% names())) 
 
 
-
 ## Cleaning the env
 rm(list = c("aggregation_output_select_multiple",
-  "select_multiple","sm_list"))
+  "select_multiple","sm_list","select_multiple_questions"))
 
 ##### Select one aggregation ##### 
 
-## Creating a list of questions for each aggregation type 
+###### Type1: No subset, No NC correction ######
 
-select_one_mode <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+select_one_outputs <- list()
+
+select_one_type1 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
   filter(`Include question`=="yes") %>% 
   filter(type=="select_one") %>% 
   filter(`Aggregation : all / subset`== "all") %>% 
-  filter(`For select one: Yes prevelance` == "no") %>% 
+  filter(is.na(`If no subset : correct for Non Consensus (NC)?`)) %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
   pull(name)
 
-select_one_mode <- c(select_one_mode,"nfi_access_dist_min_int","nfi_access_distance_max") ## Adding recoded questions
 
-select_one_yes <- import("input/aggregation/master_list.xlsx") %>% 
+select_one_outputs$type1 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type1,
+                      .funs = fn_select_one_mode) 
+
+#######  Type2: No subset, NC correction ###### 
+
+######  2.1: NC correction using community leader/camp manager/gate keeper 
+
+select_one_type2_1 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
   filter(`Include question`=="yes") %>% 
   filter(type=="select_one") %>% 
   filter(`Aggregation : all / subset`== "all") %>% 
-  filter(`For select one: Yes prevelance`== "yes") %>% 
+  filter(`If no subset : correct for Non Consensus (NC)?` == "yes") %>% 
+  filter(`If correct NC: roles?`== "community leader/camp manager/gate keeper") %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
+  pull(name)
+
+select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type2_1,
+                      .funs = fn_select_one_mode_nc_correction,
+                      subset_var = "ki_role",
+                      role = c("comm_leader", "site_manager", "gatekeeper")) 
+
+
+######  2.2: NC correction using pwd rep 
+
+select_one_type2_2 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "all") %>% 
+  filter(`If no subset : correct for Non Consensus (NC)?` == "yes") %>% 
+  filter(`If correct NC: roles?`== "pwd rep") %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
+  pull(name)
+
+select_one_outputs$type2_2 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type2_2,
+                      .funs = fn_select_one_mode_nc_correction,
+                      subset_var = "ki_role",
+                      role = c("resident_site_pwd_rep")) 
+
+###### 2.3: NC correction using woman rep
+
+select_one_type2_3 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "all") %>% 
+  filter(`If no subset : correct for Non Consensus (NC)?` == "yes") %>% 
+  filter(`If correct NC: roles?`== "woman rep") %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
+  pull(name)
+
+select_one_outputs$type2_3 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type2_3,
+                      .funs = fn_select_one_mode_nc_correction,
+                      subset_var = "ki_role",
+                      role = c("women_comm_rep")) 
+
+
+
+######  Type3: subset (community leader/camp manager/gate keeper) ###### 
+
+select_one_type3 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "subset") %>% 
+  filter(`If subset : roles ?`== "community leader/camp manager/gate keeper") %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
   pull(name)
 
 
-select_one_output <- merge(
-data %>% group_by(.dots =aggregation_columns) %>% 
-  dplyr::summarize_at(.vars = select_one_mode,.funs = fn_select_one_mode) ,
+select_one_outputs$type3 <- data %>% 
+  group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type3,
+                      .funs = fn_select_one_mode_subset,
+                      subset_var = "ki_role",
+                      role = c("comm_leader", "site_manager", "gatekeeper")) 
 
-data %>% group_by(.dots =aggregation_columns) %>% 
-  dplyr::summarize_at(.vars = select_one_yes,.funs = fn_select_one_yes_prevalence) 
-)
+
+######  Type4: subset (women rep) ######  
+
+select_one_type4 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "subset") %>% 
+  filter(`If subset : roles ?`== "women rep") %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
+  pull(name)
+
+
+select_one_outputs$type4 <- data %>% 
+  group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type4,
+                      .funs = fn_select_one_mode_subset,
+                      subset_var = "ki_role",
+                      role = c("women_comm_rep")) 
+
+######  Type5: subset (women rep/pwd rep ######  
+
+select_one_type5 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "subset") %>% 
+  filter(`If subset : roles ?`== "women rep/pwd rep") %>% 
+  filter(is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`For select one: No prevelance`)) %>%
+  pull(name)
+
+select_one_outputs$type5 <- data %>% 
+  group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type5,
+                      .funs = fn_select_one_mode_subset,
+                      subset_var = "ki_role",
+                      role = c("women_comm_rep","resident_site_pwd_rep")) 
+
+######  Type6: No subset, Yes prevalence ######  
+
+select_one_type6 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "all") %>% 
+  filter(!is.na(`For select one: Yes prevelance`)) %>% 
+  filter(is.na(`If no subset : correct for Non Consensus (NC)?`)) %>% 
+  pull(name)
+
+
+select_one_outputs$type6 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type6,.funs = fn_select_one_yes_prevalence) 
+
+
+######  Type7: Subset (women rep) , Yes prevalence ######  
+
+select_one_type7 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "all") %>% 
+  filter(!is.na(`For select one: Yes prevelance`)) %>% 
+  filter(!is.na(`If no subset : correct for Non Consensus (NC)?`)) %>% 
+  pull(name)
+
+
+select_one_outputs$type7 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type6,
+                      .funs = fn_select_one_yes_prevalence_nc_correction,
+                      subset_var = "ki_role",
+                      role = c("women_comm_rep")) 
+
+
+######  Type8: No subset, No prevalence ######  
+
+select_one_type8 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
+  filter(`Include question`=="yes") %>% 
+  filter(type=="select_one") %>% 
+  filter(`Aggregation : all / subset`== "all") %>% 
+  filter(!is.na(`For select one: No prevelance`)) %>% 
+  pull(name)
+
+
+select_one_outputs$type8 <- data %>% group_by(.dots = aggregation_column) %>% 
+  dplyr::summarize_at(.vars = select_one_type6,
+                      .funs = fn_select_one_no_prevalence) 
+
+
+MergeDFs <- function(x, y){
+  df <- merge(x, y, by= "idp_code")
+  return(df)
+}
+
+
+select_one_output <- Reduce(function(...) merge(..., all=TRUE), select_one_outputs) %>% select(any_of(names(data)))
 
 
 ## Cleaning the env
-rm(list = c("select_one_mode",
-            "select_one_yes"))
+rm(list = c("select_one_outputs",
+            ls()[grep("^select_one_type",ls())]))
+
 
 
 
@@ -160,10 +316,10 @@ numerical_questions_mode_subset <- import("input/aggregation/master_list.xlsx") 
   pull(name)
 
 
-numerical_values_output_all <- data %>% group_by(.dots =aggregation_columns) %>% 
+numerical_values_output_all <- data %>% group_by(.dots =aggregation_column) %>% 
   dplyr::summarize_at(.vars = numerical_questions_mode_all,.funs = one_sd_mean) 
 
-numerical_values_output_subset <- data %>% group_by(.dots =aggregation_columns) %>% 
+numerical_values_output_subset <- data %>% group_by(.dots =aggregation_column) %>% 
   dplyr::summarize_at(.vars = numerical_questions_mode_subset,.funs = one_sd_mean_subset) 
 
 
