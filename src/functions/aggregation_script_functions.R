@@ -68,6 +68,7 @@ fn_select_one_mode_subset <- function(x,subset_var=NULL,role=NULL) {
 }
 
 one_sd_mean_subset <- function(x,subset_var=NULL,role=NULL) {
+  
   if(all(is.na(x))){return(NA)}
   x <- na.omit(x)
   

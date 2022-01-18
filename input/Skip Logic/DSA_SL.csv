@@ -1,0 +1,17 @@
+skip logic in the xls tool,inversed criteria ?,if variable,not equals to,becoming_NA,becoming_NA,becoming_NA,becoming_NA,becoming_NA,becoming_NA,becoming_NA
+"selected(${belonging_minority_group},'yes')",FALSE,belonging_minority_group,yes,camp_structure,,,,,,
+"selected(${evictions_tenureagreement},""yes"")",FALSE,evictions_tenureagreement,yes,type_land_agreement,evictions_tenureagreement_holder,evictions_tenureagreement_renewal,evictions_tenureagreement_rentpayment,evictions_tenureagreement_rentfrequency,,
+"selected(${evictions_notice}, 'yes')",FALSE,evictions_notice,yes,evictions_notice_leavedate,factors_contributing_forced_evictions,,,,,
+"selected(${nfi_access},""yes"")",FALSE,nfi_access,yes,nfi_items,nfi_access_dist_min_int,nfi_access_impediments,,,,
+"not(selected(${water_sources_working}, 'none'))",TRUE,water_sources_working,none,water_sources_not_working,,,,,,
+${water_sources_present}!=0,TRUE,water_sources_present,0,water_sources_functional,water_access_distance_min,,,,,
+"not(selected(${water_treatment_proportion},""none""))",TRUE,water_treatment_proportion,none,water_treatment_methods,,,,,,
+"selected(${water_access_problem},'yes')",FALSE,water_access_problem,yes,water_access_barriers,,,,,,
+${sanitation_toilets_total}!=0,TRUE,sanitation_toilets_total,0,hygiene_handwashingfacilities,sanitation_lockabletoilets,sanitation_toiletlighting,sanitation_toilet_access_pwd,sanitation_desludging,sanitation_access_distance_min,sanitation_access_impediments
+"selected(${problems_sanitation_facilities},'yes')",FALSE,problems_sanitation_facilities,yes,hygiene_access_impediments,,,,,,
+"not(selected(${health_facilities},""no_health_facility""))",TRUE,health_facilities.no_health_facility,1,health_access_distance_min,health_barriers,,,,,
+"not(selected(${education_facilities}, ""no_available""))",TRUE,education_facilities.no_available,1,number_schools_opened,boys_5_12,girls_5_12,boys_13_17,girls_13_17,education_access_distance_min,
+"not(selected(${foodsecurity_livelihood},'none'))",TRUE,foodsecurity_livelihood,none,residents_no_food,foodsecurity_access_barriers,foodsecurity_coping_food,other_reason_coping,hunger_level,,
+"selected(${foodsecurity_access},""yes"")",FALSE,foodsecurity_access,yes,foodsecurity_access_distance_min,responsible_going_market,,,,,
+"selected(${support},""cash"")",FALSE,support.cash,1,kind_cash_distribution,,,,,,
+"selected(${aap_feedbackmechanism},'yes')",FALSE,aap_feedbackmechanism,yes,cccm_cfm,aap_access_barriers,,,,,
