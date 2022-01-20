@@ -28,10 +28,11 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+The Detailed Site Assessment (DSA) was initiated in coordination with the Camp Coordination and Camp Management (CCCM) Cluster in order to provide the humanitarian community with up-to-date information on the location of IDP sites, the conditions and capacity of the sites, and an estimate of the severity of humanitarian needs of residents.
 
+This project contains the aggregation and analysis scripts of the 2022 DSA. 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 ### Built With
@@ -51,8 +52,13 @@
    git clone https://github.com/lilos404/SOM2103_DSA_21
    ```
    
-2. Add the clean data set under input/
-
+2. Add the input files (clean data, gps_coordinates, cccm_master_list) under input/data
+   ```sh
+   mkdir input/data
+   cd input/data
+   cp "[path_where_data_file_is_located]/input_data.zip" .
+   unzip input_data.zip
+   ```
 
 3. Run the aggregation
    ```r
@@ -72,6 +78,7 @@
     - [x] Select one
     - [x] Numerical
     - [x] Skip logic
+    - [x] GPS coordinates
 - [ ] Indicators
 - [ ] Output production
     - [ ] Results table

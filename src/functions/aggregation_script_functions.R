@@ -444,3 +444,34 @@ fn_select_one_no_prevalence <- function(x) {
          fn_select_one_mode(x))
   
 }
+
+aggregate_gps <- function(df) {
+  
+  ## Sites with wrong or missing coordinates, gps coordintes to be pulled from the CCCM camps master list
+  
+  wrong_coordinates <- c("CCCM-SO2401-0513", "CCCM-SO2401-0200", "CCCM-SO2501-0005", "CCCM-SO2401-0028", "CCCM-SO1101-0011", "CCCM-SO1501-0002", "CCCM-SO2401-0299", "CCCM-SO1402-0003", "CCCM-SO1301-0023", "CCCM-SO2401-0080", "CCCM-SO1402-0005", "CCCM-SO1501-0011", "CCCM-SO2401-0330", "CCCM-SO2401-0114")
+  missing_coordinates <-  c("CCCM-SO220117-0117", "CCCM-SO220117-0124", "CCCM-SO220117-0315", "CCCM-SO220117-0323", "CCCM-SO220117-0490", "CCCM-SO220117-0768", "CCCM-SO2801-0018", "CCCM-SO2801-0044", "CCCM-SO2801-0066", "CCCM-SO2801-0057", "CCCM-SO2801-0058", "CCCM-SO2801-0042", "CCCM-SO2801-0038", "CCCM-SO1501-0009", "CCCM-SO2401-0017", "CCCM-SO2401-0018", "CCCM-SO2401-0139", "CCCM-SO2401-0176", "CCCM-SO2401-0180", "CCCM-SO2401-0236", "CCCM-SO2401-0247", "CCCM-SO2401-0275", "CCCM-SO2401-0286", "CCCM-SO2401-0479", "CCCM-SO2401-0484", "CCCM-SO2401-0504", "CCCM-SO2401-0542")
+  
+  sites_to_correct <- c(wrong_coordinates,missing_coordinates)
+  
+  gps_coordinates <- readRDS("input/data/gps_coordinates.RDS")
+  
+  df <- left_join(df,gps_coordinates)
+  
+  df <- df %>% group_by(idp_code) %>% summarise(
+    gps_latitude = mean(latitude,na.rm = T),
+    gps_longitude = mean(longitude,na.rm = T)) %>%
+    select(idp_code,gps_latitude,gps_longitude) %>% as.data.frame()
+  
+  cccm_master_list <- readRDS("input/data/cccm_master_list.RDS")
+  
+  
+  df <- rbind(df %>% filter(!idp_code %in% sites_to_correct),
+              cccm_master_list %>% filter(idp_code %in% sites_to_correct) 
+  )
+  
+  return(df)
+  
+  
+}
+

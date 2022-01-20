@@ -75,6 +75,7 @@ rm(list = c("listOfNumericQuestions",
 aggregation_column <- "idp_code"
 ################### ################### ################*
 
+
 ##### Select multiple aggregation ##### 
 select_multiple_questions <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
   filter(`Include question`=="yes") %>% 
@@ -355,11 +356,14 @@ all_questions_output <- subset(all_questions_output, select=lapply(colnames(data
                                  .[!is.na(.)] )
 
 
-all_questions_output <- data %>% select(localisation_region_label,
-                localisation_region,
-                localisation_district_label,
-                district,
-                idp_code) %>% left_join(.,all_questions_output, by ="idp_code")
+all_questions_output <-  left_join(data %>% select(localisation_region_label,
+                                                   localisation_region,
+                                                   localisation_district_label,
+                                                   district,
+                                                   idp_code) %>% unique(),
+                                    all_questions_output, by ="idp_code")
+
+
 
 
 all_questions_output[is.nan(all_questions_output)] <- NA
@@ -460,8 +464,16 @@ all_questions_output <- all_questions_output %>%
  all_questions_output[all_questions_output == ""] <- NA
 
  
+ ##### Append GPS coordinates  ##### 
  
-write.csv(all_questions_output,"output/Aggregation/aggregation_output.csv",
+ gps_aggregation <- aggregate_gps(data)
+ 
+ all_questions_output <- left_join(all_questions_output,gps_aggregation, by = "idp_code")
+
+ ##### Exporting the results ##### 
+ 
+
+ write.csv(all_questions_output,"output/Aggregation/aggregation_output_20_01.csv",
           na = "",row.names = F)
 
 
