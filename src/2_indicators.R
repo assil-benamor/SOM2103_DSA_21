@@ -223,5 +223,5 @@ data_indicators <- data %>% mutate(
       education_barriers_girls.parents_no_approve_curric == 1 & education_barriers_girls.cultural_beliefs == 1 & education_barriers_girls.no_aware_education_opportunities == 1 ~ 1
   )
   
-)
+)#
 
