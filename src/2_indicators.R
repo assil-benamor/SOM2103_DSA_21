@@ -221,7 +221,291 @@ data_indicators <- data %>% mutate(
     
     education_barriers_girls.no_problem == 1 & education_barriers_girls.language == 1 & education_barriers_girls.parents_no_value_edu == 1 &
       education_barriers_girls.parents_no_approve_curric == 1 & education_barriers_girls.cultural_beliefs == 1 & education_barriers_girls.no_aware_education_opportunities == 1 ~ 1
+  ),
+  
+  ### Health Critical Indicators
+  ## health_index1
+  health_index1 = case_when(
+    health_access_distance_min == "more_60" ~ 4,
+    health_access_distance_min == "3160" ~ 3,
+    health_access_distance_min == "1530" ~ 2,
+    health_access_distance_min == "less_15" ~ 1
+  ),
+  
+  ## health index2
+  health_index2 = case_when(
+    rowSums(across(c(male_health_problems.malaria,
+                   male_health_problems.fever,
+                   male_health_problems.awd_cholera,
+                   male_health_problems.resp_problems,
+                   male_health_problems.malnutrition,
+                   male_health_problems.gastrointernal,
+                   male_health_problems.injuries,
+                   male_health_problems.measles,
+                   male_health_problems.no_health_issues,
+                   male_health_problems.no_health_issues))) >= 4 ~ 4,
+    
+    rowSums(across(c(male_health_problems.malaria,
+                     male_health_problems.fever,
+                     male_health_problems.awd_cholera,
+                     male_health_problems.resp_problems,
+                     male_health_problems.malnutrition,
+                     male_health_problems.gastrointernal,
+                     male_health_problems.injuries,
+                     male_health_problems.measles,
+                     male_health_problems.no_health_issues,
+                     male_health_problems.no_health_issues))) == 3  ~ 3,
+    
+    rowSums(across(c(male_health_problems.malaria,
+                     male_health_problems.fever,
+                     male_health_problems.awd_cholera,
+                     male_health_problems.resp_problems,
+                     male_health_problems.malnutrition,
+                     male_health_problems.gastrointernal,
+                     male_health_problems.injuries,
+                     male_health_problems.measles,
+                     male_health_problems.no_health_issues,
+                     male_health_problems.no_health_issues))) == 2 ~ 2,
+    
+    rowSums(across(c(male_health_problems.malaria,
+                     male_health_problems.fever,
+                     male_health_problems.awd_cholera,
+                     male_health_problems.resp_problems,
+                     male_health_problems.malnutrition,
+                     male_health_problems.gastrointernal,
+                     male_health_problems.injuries,
+                     male_health_problems.measles,
+                     male_health_problems.no_health_issues,
+                     male_health_problems.no_health_issues))) == 1 ~ 1
+  ),
+  
+  ## health index3
+  health_index3 = case_when(
+    rowSums(across(c(female_health_problems.malaria,
+                    female_health_problems.fever,
+                    female_health_problems.awd_cholera,
+                    female_health_problems.resp_problems,
+                    female_health_problems.malnutrition,
+                    female_health_problems.gastrointernal,
+                    female_health_problems.injuries,
+                    female_health_problems.measles,
+                    female_health_problems.no_health_issues))) >= 4 ~ 4,
+    
+    rowSums(across(c(female_health_problems.malaria,
+                    female_health_problems.fever,
+                    female_health_problems.awd_cholera,
+                    female_health_problems.resp_problems,
+                    female_health_problems.malnutrition,
+                    female_health_problems.gastrointernal,
+                    female_health_problems.injuries,
+                    female_health_problems.measles,
+                    female_health_problems.no_health_issues))) == 3 ~ 3,
+    
+    rowSums(across(c(female_health_problems.malaria,
+                    female_health_problems.fever,
+                    female_health_problems.awd_cholera,
+                    female_health_problems.resp_problems,
+                    female_health_problems.malnutrition,
+                    female_health_problems.gastrointernal,
+                    female_health_problems.injuries,
+                    female_health_problems.measles,
+                    female_health_problems.no_health_issues))) == 2 ~ 2,
+    
+    rowSums(across(c(female_health_problems.malaria,
+                    female_health_problems.fever,
+                    female_health_problems.awd_cholera,
+                    female_health_problems.resp_problems,
+                    female_health_problems.malnutrition,
+                    female_health_problems.gastrointernal,
+                    female_health_problems.injuries,
+                    female_health_problems.measles,
+                    female_health_problems.no_health_issues))) == 1 ~ 1
+  ),
+  
+  ## health index4
+  health_index4 = case_when(
+    health_women_unskilledhealthpersonnel == "all" ~ 4,
+    health_women_unskilledhealthpersonnel %in% c("some", "many") ~ 3,
+    health_women_unskilledhealthpersonnel == "few" ~ 2,
+    health_women_unskilledhealthpersonnel == "none" ~ 1
+  ),
+  
+  ### Health Non-Critical Indicators
+  ## health nc index1
+  health_nc_index1 = case_when(
+    health_facilities.no_health_facility == 1 ~ 1,
+    health_facilities.first_aid_post == 1 & health_facilities.pharmacy == 1 & health_facilities.district_hospital == 1 & health_facilities.mobile_clinic == 1 & health_facilities.private_clinic == 1 & health_facilities.ngo_clinic == 1 & health_facilities.govt_clinic == 1 ~ 0
+  ),
+  
+  ## health nc index2
+  health_nc_index2 = case_when(
+    health_services.none == 1 ~ 1,
+    health_services.prim_hc == 1 & health_services.vaccinations == 1 & health_services.child_hc == 1 & health_services.maternal_hc == 1 & health_services.nutrition_services == 1 & health_services.hiv_counsell_testing == 1 & health_services.mental_health_services == 1 ~ 0
+  ),
+  
+  ## health nc index3
+  health_nc_index3 = case_when(
+    male_sickness %in% c("some", "many", "all") ~ 1,
+    male_sickness %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index4
+  health_nc_index4 = case_when(
+    female_sickness %in% c("some", "many", "all") ~ 1,
+    female_sickness %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index5 - male_wounds
+  health_nc_index5 = case_when(
+    male_wounds %in% c("some", "many", "all") ~ 1,
+    male_wounds %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index6 - female_wounds
+  health_nc_index6 = case_when(
+    female_wounds %in% c("some", "many", "all") ~ 1,
+    female_wounds %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index7 - male_disabilities
+  health_nc_index7 = case_when(
+    male_disabilities %in% c("some", "many", "all") ~ 1,
+    male_disabilities %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index8 - female_disabilities
+  health_nc_index8 = case_when(
+    female_disabilities %in% c("some", "many", "all") ~ 1,
+    female_disabilities %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index9 - male_mental_health
+  health_nc_index9 = case_when(
+    male_mental_health %in% c("some", "many", "all") ~ 1,
+    male_mental_health %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index10 - female_mental_health
+  health_nc_index10 = case_when(
+    female_mental_health %in% c("some", "many", "all") ~ 1,
+    female_mental_health %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index11 - adeqaute_health_men
+  health_nc_index11 = case_when(
+    adeqaute_health_men %in% c("some", "many", "all") ~ 1,
+    adeqaute_health_men %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index12 - adeqaute_health_women
+  health_nc_index12 = case_when(
+    adeqaute_health_women %in% c("some", "many", "all") ~ 1,
+    adeqaute_health_women %in% c("none", "few") ~ 0
+  ),
+  
+  ## health nc index13 - health_barriers
+  health_nc_index13 = case_when(
+    health_barriers.cost == 1 & health_barriers.no_qualified == 1 & health_barriers.not_open == 1 & health_barriers.far_away == 1 & health_barriers.refuse_treatment == 1 & health_barriers.no_medicine == 1 & health_barriers.no_treatment_avail == 1 & health_barriers.pwd_excluded == 1 ~ 1,
+    health_barriers.no_problem == 1 ~ 0
+  ),
+  
+  ### Nutrition Non-Critical Indicators
+  ## nutrition nc index1
+  nutrition_nc_index1 = case_when(
+    nutrition_distributions.none == 1 ~ 1,
+    nutrition_distributions.muac_tape == 1 & nutrition_distributions.plumpy == 1 & nutrition_distributions.super_cereal_plus == 1 & nutrition_distributions.therap_dairy == 1 ~ 0
+  ),
+  
+  ## nutrition nc index2
+  nutrition_nc_index2 = case_when(
+    nutrition_access_distance_min == "more_60" ~ 1,
+    nutrition_access_distance_min %in% c("less_15", "3160", "31_60", "1530") ~ 0
+  ),
+  
+  ## nutrition nc index3
+  nutrition_nc_index3 = case_when(
+    rowSums(across(c(nutrition_services.cost,
+                     nutrition_services.no_qualified,
+                     nutrition_services.documents,
+                     nutrition_services.no_referral,
+                     nutrition_services.not_open,
+                     nutrition_services.far_away,
+                     nutrition_services.refuse_treatment_some_groups,
+                     nutrition_services.staff_disrespectful,
+                     nutrition_services.refuse_treatment,
+                     nutrition_services.no_medicine,
+                     nutrition_services.no_treatment_avail,
+                     nutrition_services.pwd_excluded))) >= 3 ~ 1,
+    
+    rowSums(across(c(nutrition_services.cost,
+                     nutrition_services.no_qualified,
+                     nutrition_services.documents,
+                     nutrition_services.no_referral,
+                     nutrition_services.not_open,
+                     nutrition_services.far_away,
+                     nutrition_services.refuse_treatment_some_groups,
+                     nutrition_services.staff_disrespectful,
+                     nutrition_services.refuse_treatment,
+                     nutrition_services.no_medicine,
+                     nutrition_services.no_treatment_avail,
+                     nutrition_services.pwd_excluded))) <= 2 ~ 0
+    
+  ),
+  
+  ### SNFI Critical Indicators
+  ## nfi_inxex1
+  nfi_index1 = case_when(
+    none == "all" ~ 4,
+    none %in% c("some", "many") ~ 3,
+    none == "few" ~ 2,
+    none == "none" ~ 1
+  ),
+  
+  ### NFI Non-Critical Indicators
+  ## nfi nc index1
+  
+  
+  ## nfi nc index2
+  nfi_nc_index2 = case_when(
+    rowSums(across(c(nfi_items_available.sleep_mats,
+                     nfi_items_available.plastic_sheets,
+                     nfi_items_available.blankets,
+                     nfi_items_available.jerry_cans_buckets,
+                     nfi_items_available.cooking_utensils,
+                     nfi_items_available.mosquito_nets,
+                     nfi_items_available.solar_lamp))) <= 4 ~ 1,
+    
+    rowSums(across(c(nfi_items_available.sleep_mats,
+                     nfi_items_available.plastic_sheets,
+                     nfi_items_available.blankets,
+                     nfi_items_available.jerry_cans_buckets,
+                     nfi_items_available.cooking_utensils,
+                     nfi_items_available.mosquito_nets,
+                     nfi_items_available.solar_lamp))) >= 5 ~ 0
+  ),
+  
+  ## nfi nc index3
+  nfi_nc_index3 = case_when(
+    cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.shelter_kit == 0 ~ 1,
+    cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.shelter_kit == 1 ~ 0
+  ),
+  
+  ## nfi nc index4
+  nfi_nc_index4 = case_when(
+    cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.nfi_kit == 0 ~ 1,
+    cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.nfi_kit == 1 ~ 0 
+  ),
+  
+  ## nfi nc index5
+  nfi_nc_index5 = case_when(
+    shelter_publiclighting == "no" ~ 1,
+    shelter_publiclighting == "yes" ~ 0
+  ),
+  
+  ## nfi nc index6
+  nfi_nc_index6 = case_when(
+    shelter_types %in% c("buul", "tent", "timber_plastic_cgi", "shelter_kit") ~ 1,
+    shelter_types %in% c("cgi_wall_roof", "mud_stick_cgi", "plywood_cgi", "stone_brick_cgi1", "stone_brick_cgi2") ~ 0
   )
   
 )#
-
