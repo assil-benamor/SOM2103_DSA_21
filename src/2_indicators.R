@@ -506,6 +506,43 @@ data_indicators <- data %>% mutate(
   nfi_nc_index6 = case_when(
     shelter_types %in% c("buul", "tent", "timber_plastic_cgi", "shelter_kit") ~ 1,
     shelter_types %in% c("cgi_wall_roof", "mud_stick_cgi", "plywood_cgi", "stone_brick_cgi1", "stone_brick_cgi2") ~ 0
+  ),
+  
+  ### HLP Critical Indicators
+  ## hlp index1
+  hlp_index1 = case_when(
+    housing_property_incidences.confiscation_property == 1 & housing_property_incidences.illegal_occupation == 1 ~ 4,
+    housing_property_incidences.encroachment_boundary_disputes == 1 ~ 3,
+    housing_property_incidences.damaged_inadequate_accomodation == 1 ~ 2,
+    housing_property_incidences.dnk == 1 ~ 1
+  ),
+  
+  ## hlp index2
+  hlp_index2 = case_when(
+    evictions_notice == "yes" ~ 4,
+    evictions_notice == "no" ~ 1
+  ),
+  
+  ## hlp index3
+  hlp_index3 = case_when(
+    rate_likelihood_eviction == "very_high" ~ 4,
+    rate_likelihood_eviction == "moderate_moderate" ~ 3,
+    rate_likelihood_eviction == "low" ~ 1
+  ),
+  
+  ### HLP Non-Critical Indicators
+  ## hlp nc index1
+  hlp_nc_index1 = case_when(
+    evictions_landowner == "no_owner" ~ 1,
+    evictions_landowner %in% c("fed_govt", "local_authority_govt", "mixed", "private_owner", "pnta") ~ 0
+  ),
+  
+  ## hlp nc index2
+  hlp_nc_index2 = case_when(
+    evictions_tenureagreement == "no" & type_land_agreement == "oral" ~ 1,
+    type_land_agreement == "written" ~ 0
   )
   
 )#
+
+
