@@ -145,11 +145,13 @@ select_one_type2_1 <- import("input/aggregation/Data aggregation plan_IDP Site l
   filter(is.na(`For select one: No prevelance`)) %>%
   pull(name)
 
+
 select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_one_type2_1,
                       .funs = fn_select_one_mode_nc_correction,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("comm_leader", "site_manager", "gatekeeper")) 
+
 
 
 ######  2.2: NC correction using pwd rep 
@@ -167,7 +169,7 @@ select_one_type2_2 <- import("input/aggregation/Data aggregation plan_IDP Site l
 select_one_outputs$type2_2 <- data %>% group_by(.dots = aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_one_type2_2,
                       .funs = fn_select_one_mode_nc_correction,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("resident_site_pwd_rep")) 
 
 ###### 2.3: NC correction using woman rep
@@ -185,8 +187,9 @@ select_one_type2_3 <- import("input/aggregation/Data aggregation plan_IDP Site l
 select_one_outputs$type2_3 <- data %>% group_by(.dots = aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_one_type2_3,
                       .funs = fn_select_one_mode_nc_correction,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("women_comm_rep")) 
+
 
 
 
@@ -206,7 +209,7 @@ select_one_outputs$type3 <- data %>%
   group_by(.dots = aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_one_type3,
                       .funs = fn_select_one_mode_subset,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("comm_leader", "site_manager", "gatekeeper")) 
 
 
@@ -226,7 +229,7 @@ select_one_outputs$type4 <- data %>%
   group_by(.dots = aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_one_type4,
                       .funs = fn_select_one_mode_subset,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("women_comm_rep")) 
 
 ######  Type5: subset (women rep/pwd rep ######  
@@ -244,7 +247,7 @@ select_one_outputs$type5 <- data %>%
   group_by(.dots = aggregation_column) %>% 
   dplyr::summarize_at(.vars = select_one_type5,
                       .funs = fn_select_one_mode_subset,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("women_comm_rep","resident_site_pwd_rep")) 
 
 ######  Type6: No subset, Yes prevalence ######  
@@ -262,23 +265,6 @@ select_one_outputs$type6 <- data %>% group_by(.dots = aggregation_column) %>%
   dplyr::summarize_at(.vars = select_one_type6,.funs = fn_select_one_yes_prevalence) 
 
 
-######  Type7: Subset (women rep) , Yes prevalence ######  
-
-select_one_type7 <- import("input/aggregation/Data aggregation plan_IDP Site level.xlsx") %>% 
-  filter(`Include question`=="yes") %>% 
-  filter(type=="select_one") %>% 
-  filter(`Aggregation : all / subset`== "all") %>% 
-  filter(!is.na(`For select one: Yes prevelance`)) %>% 
-  filter(!is.na(`If no subset : correct for Non Consensus (NC)?`)) %>% 
-  pull(name)
-
-
-select_one_outputs$type7 <- data %>% group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type6,
-                      .funs = fn_select_one_yes_prevalence_nc_correction,
-                      subset_var = "ki_role",
-                      role = c("women_comm_rep")) 
-
 
 ######  Type8: No subset, No prevalence ######  
 
@@ -291,7 +277,7 @@ select_one_type8 <- import("input/aggregation/Data aggregation plan_IDP Site lev
 
 
 select_one_outputs$type8 <- data %>% group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type6,
+  dplyr::summarize_at(.vars = select_one_type8,
                       .funs = fn_select_one_no_prevalence) 
 
 
@@ -327,7 +313,7 @@ numerical_values_output_all <- data %>% group_by(.dots =aggregation_column) %>%
 numerical_values_output_subset <- data %>% group_by(.dots =aggregation_column) %>% 
   dplyr::summarize_at(.vars = numerical_questions_mode_subset,
                       .funs = one_sd_mean_subset,
-                      subset_var = "ki_role",
+                      subset_var = .$"ki_role",
                       role = c("women_comm_rep")) 
 
 
@@ -472,11 +458,9 @@ all_questions_output <- all_questions_output %>%
 
  ##### Exporting the results ##### 
  
-
- write.csv(all_questions_output,"output/Aggregation/aggregation_output_20_01.csv",
+ 
+ write.csv(all_questions_output,"output/Aggregation/aggregation_output_04_02.csv",
           na = "",row.names = F)
-
-
 
 
 

@@ -403,12 +403,34 @@ select_multiple_apply_constraints <- function(df) {
   return(df)
 }
 
+# fn_select_one_mode_nc_correction <- function(x,subset_var=NULL,role=NULL) {
+#   
+#   if(all(is.na(x))){return(NA)}
+#   
+#   if (fn_select_one_mode(x) != 'NC') {
+#     return(fn_select_one_mode(x))
+#   }
+#   
+#   if (hasArg(subset_var) & hasArg(role)) {
+#     
+#     if(length(which(subset_var %in% role))!=0) {
+#       x <- x[which(subset_var %in% role)]
+#     }
+#     
+#   }
+#   
+#   
+#   uniqx <- unique(na.omit(x))
+#   uniqx[which.max(tabulate(match(x, uniqx)))]
+#   
+# }
+
 fn_select_one_mode_nc_correction <- function(x,subset_var=NULL,role=NULL) {
   
   if(all(is.na(x))){return(NA)}
   
   if (fn_select_one_mode(x) != 'NC') {
-    return(fn_select_one_mode(x))
+      return(fn_select_one_mode(x))
   }
   
   if (hasArg(subset_var) & hasArg(role)) {
@@ -419,21 +441,11 @@ fn_select_one_mode_nc_correction <- function(x,subset_var=NULL,role=NULL) {
     
   }
   
-  
   uniqx <- unique(na.omit(x))
   uniqx[which.max(tabulate(match(x, uniqx)))]
   
 }
 
-fn_select_one_yes_prevalence_nc_correction <- function(x,subset_var=NULL,role=NULL) {
-  
-  if(all(is.na(x))){return(NA)}
-  
-  ifelse(any(x=="yes"), 
-         "yes",
-         fn_select_one_mode_nc_correction(x, subset_var = subset_var, role = role))
-  
-}
 
 fn_select_one_no_prevalence <- function(x) {
   
