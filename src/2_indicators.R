@@ -541,6 +541,125 @@ data_indicators <- data %>% mutate(
   hlp_nc_index2 = case_when(
     evictions_tenureagreement == "no" & type_land_agreement == "oral" ~ 1,
     type_land_agreement == "written" ~ 0
+  ),
+  
+  ### Food Security Critical Indicators
+  ## food security index1
+  
+  ## food_security_index2
+  food_sec_index2 = case_when(
+    foodsecurity_access_barriers.sec_issues == 1 & foodsecurity_access_barriers.harassment_way_distribution_site == 1 ~ 4,
+    foodsecurity_access_barriers.natural_causes == 1 & foodsecurity_access_barriers.no_funct_market == 1 & foodsecurity_access_barriers.inability_refusal_government_foodaid == 1 & foodsecurity_access_barriers.refusal_ngo_foodaid == 1 & foodsecurity_access_barriers.accessing_pay_portion_gatekeeper == 1 & foodsecurity_access_barriers.accessing_pay_portion_landlord == 1 ~ 3,
+    foodsecurity_access_barriers.no_land_livestock == 1 & foodsecurity_access_barriers.econ_causes == 1 & foodsecurity_access_barriers.social_cultural_causes == 1 & foodsecurity_access_barriers.perception_beliefs == 1 ~ 2
+  ),
+  
+  ## food security index3
+  food_sec_index3 = case_when(
+    foodsecurity_coping_food.gather_wild_food == 1 & foodsecurity_coping_food.gather_firewood == 1 & foodsecurity_coping_food.consume_seeds == 1 & foodsecurity_coping_food.displacement_camp == 1 & foodsecurity_coping_food.limit_meal_size == 1 & foodsecurity_coping_food.only_children_eat == 1 & foodsecurity_coping_food.reduce_meals == 1 & foodsecurity_coping_food.skip_days == 1 ~ 4,
+    foodsecurity_coping_food.sell_home_assets == 1 & foodsecurity_coping_food.sell_livestock == 1 & foodsecurity_coping_food.slaughter_livestock == 1 & foodsecurity_coping_food.hunting == 1 & foodsecurity_coping_food.fishing == 1 ~ 3,
+    foodsecurity_coping_food.borrow_food == 1 & foodsecurity_coping_food.household_begs == 1 & foodsecurity_coping_food.borrow_money == 1 & foodsecurity_coping_food.send_children_to_neighbors == 1 & foodsecurity_coping_food.less_expensive_food == 1 ~ 2
+  ),
+  
+  ### Food Security Non-Critical Indicators
+  ## food security nc index1
+  food_sec_nc_index1 = case_when(
+    foodsecurity_primary %in% c("food_assist_ngo", "food_assist_govt", "gifts_friends_family", "borrow_debt") ~ 1,
+    foodsecurity_primary %in% c("market_purchases", "hh_production", "own_livestock", "fish_forage_hunt", "trade_labour") ~ 0
+  ),
+  
+  ## food security nc index2
+  food_sec_nc_index2 = case_when(
+    male_small_scale_crop %in% c("none", "few") ~ 1,
+    male_small_scale_crop %in% c("some", "many", "all") ~ 0
+  ),
+  
+  ## food security nc index3
+  food_sec_nc_index3 = case_when(
+    female_small_scale_crop %in% c("none", "few") ~ 1,
+    female_small_scale_crop %in% c("some", "many", "all") ~ 0
+  ),
+  
+  ## food security nc index4
+  food_sec_nc_index4 = case_when(
+    male_animal_husband_livestock %in% c("none", "few") ~ 1,
+    male_animal_husband_livestock %in% c("some", "many", "all") ~ 0
+  ),
+  
+  ## food security nc index5
+  food_sec_nc_index5 = case_when(
+    female_animal_husband_livestock %in% c("none", "few") ~ 1,
+    female_animal_husband_livestock %in% c("some", "many", "all") ~ 0
+  ),
+  
+  ## food security nc index6
+  food_sec_nc_index6 = case_when(
+    fishing %in% c("none", "few") ~ 1,
+    fishing %in% c("some", "many", "all") ~ 0
+  ),
+  
+  ## food security nc index7
+  food_sec_nc_index7 = case_when(
+    foodsecurity_access == "no" ~ 1,
+    foodsecurity_access == "yes" ~ 0
+  ),
+  
+  ## food security nc index8
+  food_sec_nc_index8 = case_when(
+    foodsecurity_access_distance_min == "more_60" ~ 1,
+    foodsecurity_access_distance_min %in% c("less_15", "1530", "3160") ~ 0
+  ),
+  
+  ### Access Districts
+  ## overall B
+  overall = case_when(
+    localisation_district_label %in% c("Belet Weyne",
+                                       "Jowhar",
+                                       "Balcad",
+                                       "Dharkenley",
+                                       "Daynile",
+                                       "Kahda",
+                                       "Kismaayo",
+                                       "Luuq",
+                                       "Baardheere",
+                                       "Doolow",
+                                       "Afmadow",
+                                       "Garbahaarey",
+                                       "Ceel Waaq",
+                                       "Belet Xaawo",
+                                       "Bossaso",
+                                       "Buuhoodle",
+                                       "Xudun",
+                                       "Laasqoray",
+                                       "Marka",
+                                       "Afgooye",
+                                       "Wanla Weyn",
+                                       "Baydhaba",
+                                       "Diinsoor",
+                                       "Qansax Dheere",
+                                       "Xudur",
+                                       "Ceel Barde",
+                                       "Waajid") ~ "B",
+    
+    localisation_district_label %in% c("Gaalkacyo",
+                                       "Galdogob",
+                                       "Hobyo",
+                                       "Dhuusamarreeb",
+                                       "Cabudwaaq",
+                                       "Cadaado",
+                                       "Qardho",
+                                       "Garoowe",
+                                       "Burtinle",
+                                       "Borama",
+                                       "Baki",
+                                       "Lughaye",
+                                       "Hargeysa",
+                                       "Burco",
+                                       "Owdweyne",
+                                       "Sheikh",
+                                       "Laas Caanood",
+                                       "Caynabo",
+                                       "Ceerigaabo",
+                                       "Ceel Afweyn") ~ "C"
   )
   
 )#
