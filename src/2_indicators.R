@@ -42,69 +42,73 @@ data_indicators <- data %>% mutate(
   
   ## WASH Index 4
   wash_index4 = case_when(
-    hygiene_handwashingfacilities == "all" ~ 4,
-    hygiene_handwashingfacilities == "many" ~ 3,
-    hygiene_handwashingfacilities == "some" ~ 2,
-    hygiene_handwashingfacilities == "few" ~ 1
+    hygiene_handwashingfacilities == "all" ~ 1,
+    hygiene_handwashingfacilities == "many" ~ 2,
+    hygiene_handwashingfacilities == "some" ~ 3,
+    hygiene_handwashingfacilities %in% c("few", "none") ~ 4
   ),
   
   ### WASH Non-Critical
   ## wash_nc_index1
   wash_nc_index = case_when(
-    water_access_problem == "yes" & water_access_barriers.waterpoints_disabilities == 1 & water_access_barriers.fetching_activity == 1 & water_access_barriers.insufficient_points == 1 ~ 3,
-    water_access_problem == "yes" & water_access_barriers.no_problem == 1 ~ 1
+    water_access_problem == "yes" | water_access_barriers.waterpoints_disabilities == 1 | water_access_barriers.fetching_activity == 1 | water_access_barriers.insufficient_points == 1 ~ 1,
+    water_access_problem == "yes" | water_access_barriers.no_problem == 1 ~ 0
   ),
   
   ## wash_nc_index2
   wash_nc_index2 = case_when(
-    sanitation_solidwastedisposal.disposed_open_grounds == 1 | sanitation_solidwastedisposal.burnt_open_spaces == 1 | sanitation_solidwastedisposal.not_managed == 1 ~ 3,
-    sanitation_solidwastedisposal.buried_in_pit == 1 ~ 1
+    sanitation_solidwastedisposal.disposed_open_grounds == 1 | sanitation_solidwastedisposal.burnt_open_spaces == 1 | sanitation_solidwastedisposal.not_managed == 1 ~ 1,
+    sanitation_solidwastedisposal.buried_in_pit == 1 | sanitation_solidwastedisposal.dnk == 1 | sanitation_solidwastedisposal.other == 1 ~ 0
   ),
   
   ## wash_nc_index3
   wash_nc_index3 = case_when(
-    water_treatment_proportion %in% c("some", "many", "all") ~ 3,
-    water_treatment_proportion == "none" ~ 1
+    water_treatment_proportion %in% c("some", "many", "all") ~ 1,
+    water_treatment_proportion == "none" ~ 0
   ),
   
   ## wash_nc_index4
   wash_nc_index4 = case_when(
-    latrines_accessible_pwd %in% c("some", "many", "all") ~ 3,
-    latrines_accessible_pwd == "none" ~ 1
+    latrines_accessible_pwd %in% c("some", "many", "all") ~ 1,
+    latrines_accessible_pwd == "none" ~ 0
   ),
   
   ## wash_nc_index5
   wash_nc_index5 = case_when(
     problems_sanitation_facilities == "yes" &
-      hygiene_access_impediments.lack_quant == 1 & hygiene_access_impediments.no_funct_full == 1 &
-      hygiene_access_impediments.unhygienic == 1 & hygiene_access_impediments.not_privat == 1 &
-      hygiene_access_impediments.no_gender_segr == 1 & hygiene_access_impediments.too_far == 1 &
-      hygiene_access_impediments.difficult_reach == 1 & hygiene_access_impediments.dangerous == 1 &
-      hygiene_access_impediments.groups_no_access == 1 ~ 3
+      hygiene_access_impediments.lack_quant == 1 | hygiene_access_impediments.no_funct_full == 1 |
+      hygiene_access_impediments.unhygienic == 1 | hygiene_access_impediments.not_privat == 1 |
+      hygiene_access_impediments.no_gender_segr == 1 | hygiene_access_impediments.too_far == 1 |
+      hygiene_access_impediments.difficult_reach == 1 | hygiene_access_impediments.dangerous == 1 |
+      hygiene_access_impediments.groups_no_access == 1 ~ 1,
+    
+    problems_sanitation_facilities == "no" ~ 0
   ),
   
   ### Protection Critical
   ## protection index 1
   protection_index1 = case_when(
-    protection_incidents.armed_violence == 1 & protection_incidents.uxo == 1 & protection_incidents.disappear == 1 & protection_incidents.forced_recruit == 1 ~ 4,
+    protection_incidents.armed_violence == 1 | protection_incidents.uxo == 1 | protection_incidents.disappear == 1 | protection_incidents.forced_recruit == 1 ~ 4,
     
-    protection_incidents.gbv == 1 & protection_incidents.arrest_detention == 1 & protection_incidents.abduction == 1 &
-      protection_incidents.displacement == 1 & protection_incidents.violence_aid_distrib == 1 & protection_incidents.exploit_abuse_access_aid == 1 &
-      protection_incidents.unaccomp_child == 1 & protection_incidents.destruction_property == 1 ~ 3,
+    protection_incidents.gbv == 1 | protection_incidents.arrest_detention == 1 | protection_incidents.abduction == 1 |
+      protection_incidents.displacement == 1 | protection_incidents.violence_aid_distrib == 1 | protection_incidents.exploit_abuse_access_aid == 1 |
+      protection_incidents.unaccomp_child == 1 | protection_incidents.destruction_property == 1 ~ 3,
     
-    protection_incidents.illegal_tax == 1 & protection_incidents.inter_communal == 1 & protection_incidents.land_grabbing == 1 &
-      protection_incidents.denied_access_justice == 1 ~ 2
+    protection_incidents.illegal_tax == 1 | protection_incidents.inter_communal == 1 | protection_incidents.land_grabbing == 1 |
+      protection_incidents.denied_access_justice == 1 ~ 2,
+    
+    protection_incidents.dnk == 1 | protection_incidents.pnta == 1 | protection_incidents.other == 1 ~ 1
   ),
   
   ## protection index 2
   protection_index2 = case_when(
-    insecure_areas.in_shelter == 1 & insecure_areas.water_point == 1 & insecure_areas.latrines == 1 & insecure_areas.bathing_areas == 1 &
-      insecure_areas.schools == 1 & insecure_areas.way_to_school == 1 ~ 4,
+    insecure_areas.in_shelter == 1 | insecure_areas.water_point == 1 | insecure_areas.latrines == 1 | insecure_areas.bathing_areas == 1 |
+      insecure_areas.schools == 1 | insecure_areas.way_to_school == 1 ~ 4,
     
-    insecure_areas.outside_settlement == 1 & insecure_areas.markets == 1 & insecure_areas.way_to_market == 1 &
-      insecure_areas.health_centres == 1 & insecure_areas.nutrition_centres == 1 & insecure_areas.humanitarian_aid == 1 ~ 3,
+    insecure_areas.outside_settlement == 1 | insecure_areas.markets == 1 | insecure_areas.way_to_market == 1 |
+      insecure_areas.health_centres == 1 | insecure_areas.nutrition_centres == 1 | insecure_areas.humanitarian_aid == 1 ~ 3,
     
-    insecure_areas.no_problems == 1 ~ 1
+    insecure_areas.no_problems == 1 | insecure_areas.dnk == 1 | insecure_areas.pnta == 1 | insecure_areas.other == 1 ~ 1
   ),
   
   ### Protection Non-Critical indicators
@@ -113,33 +117,33 @@ data_indicators <- data %>% mutate(
   
   ## protection nc index 2
   protection_nc_index2 = case_when(
-    protection_childfriendlyspace == "no" ~ 3,
-    protection_childfriendlyspace == "yes" ~ 2
+    protection_childfriendlyspace == "no" ~ 1,
+    protection_childfriendlyspace == "yes" ~ 0
   ),
   
   ## protection nc index 3
   protection_nc_index3 = case_when(
-    protection_restrictions_day == "no" ~ 3,
-    protection_restrictions_day == "yes" ~ 2
+    protection_restrictions_day == "no" ~ 1,
+    protection_restrictions_day == "yes" ~ 0
   ),
   
   ## protection nc index4
   protection_nc_index4 = case_when(
-    protection_restrictions_night == "no" ~ 2,
-    protection_restrictions_night == "yes" ~ 3
+    protection_restrictions_night == "no" ~ 0,
+    protection_restrictions_night == "yes" ~ 1
   ),
   
   ## protection nc index5
   protection_nc_index5 = case_when(
-    support_access_impediments.minorities == 1 ~ 3,
-    support_access_impediments.women == 1 & support_access_impediments.children == 1 & support_access_impediments.elders == 1 & support_access_impediments.disabled == 1 & support_access_impediments.marginalised == 1 & support_access_impediments.no_impediments == 1 ~ 2          
+    support_access_impediments.minorities == 1 ~ 1,
+    support_access_impediments.women == 1 | support_access_impediments.children == 1 | support_access_impediments.elders == 1 | support_access_impediments.disabled == 1 | support_access_impediments.marginalised == 1 | support_access_impediments.no_impediments == 1 ~ 0          
   ),
   
   ### Education Non-Critical Index
   ## education nc index 1
   education_nc_index1 = case_when(
     education_facilities.no_available == 1 ~ 1,
-    education_facilities.primary == 1 & education_facilities.secondary == 1 & education_facilities.quoranic == 1 & education_facilities.basic_edu == 1 ~ 0
+    education_facilities.primary == 1 | education_facilities.secondary == 1 | education_facilities.quoranic == 1 | education_facilities.basic_edu == 1 ~ 0
   ),
   
   ## education nc index 2
@@ -193,18 +197,18 @@ data_indicators <- data %>% mutate(
   ### Education Critical Indicator
   ## education index 1
   education_inex = case_when(
-    education_barriers_boys.child_recruited_ag == 1 & education_barriers_boys.displacement_conflict == 1 ~ 4,
+    education_barriers_boys.child_recruited_ag == 1 | education_barriers_boys.displacement_conflict == 1 ~ 4,
     
-    education_barriers_boys.security_concerns == 1 & education_barriers_boys.child_lack_documentation == 1 & 
-      education_barriers_boys.costs == 1 & education_barriers_boys.child_pycho_distress & education_barriers_boys.help_at_home == 1 &
-      education_barriers_boys.work_outside_home == 1 & education_barriers_boys.marriage_pregnant == 1 & education_barriers_boys.flood == 1 ~ 3,
+    education_barriers_boys.security_concerns == 1 | education_barriers_boys.child_lack_documentation == 1 | 
+      education_barriers_boys.costs == 1 | education_barriers_boys.child_pycho_distress | education_barriers_boys.help_at_home == 1 |
+      education_barriers_boys.work_outside_home == 1 | education_barriers_boys.marriage_pregnant == 1 | education_barriers_boys.flood == 1 ~ 3,
     
-    education_barriers_boys.far_away == 1 & education_barriers_boys.closed == 1 & education_barriers_boys.poor_infrastructure == 1 &
-      education_barriers_boys.lack_quali_staff == 1 & education_barriers_boys.no_wash_at_school == 1 &
-      education_barriers_boys.no_gender_separ == 1 & education_barriers_boys.help_at_home == 1 ~ 2,
+    education_barriers_boys.far_away == 1 | education_barriers_boys.closed == 1 | education_barriers_boys.poor_infrastructure == 1 |
+      education_barriers_boys.lack_quali_staff == 1 | education_barriers_boys.no_wash_at_school == 1 |
+      education_barriers_boys.no_gender_separ == 1 | education_barriers_boys.help_at_home == 1 ~ 2,
     
-    education_barriers_boys.no_problem == 1 & education_barriers_boys.language == 1 & education_barriers_boys.parents_no_value_edu == 1 &
-      education_barriers_boys.parents_no_approve_curric == 1 & education_barriers_boys.cultural_beliefs == 1 & education_barriers_boys.no_aware_education_opportunities == 1 ~ 1
+    education_barriers_boys.no_problem == 1 | education_barriers_boys.language == 1 | education_barriers_boys.parents_no_value_edu == 1 |
+      education_barriers_boys.parents_no_approve_curric == 1 | education_barriers_boys.cultural_beliefs == 1 | education_barriers_boys.no_aware_education_opportunities == 1 ~ 1
   ),
   
   ## education index 2
@@ -334,12 +338,12 @@ data_indicators <- data %>% mutate(
   ## health nc index1
   health_nc_index1 = case_when(
     health_facilities.no_health_facility == 1 ~ 1,
-    health_facilities.first_aid_post == 1 & health_facilities.pharmacy == 1 & health_facilities.district_hospital == 1 & health_facilities.mobile_clinic == 1 & health_facilities.private_clinic == 1 & health_facilities.ngo_clinic == 1 & health_facilities.govt_clinic == 1 ~ 0
+    health_facilities.first_aid_post == 1 | health_facilities.pharmacy == 1 | health_facilities.district_hospital == 1 | health_facilities.mobile_clinic == 1 | health_facilities.private_clinic == 1 | health_facilities.ngo_clinic == 1 | health_facilities.govt_clinic == 1 ~ 0
   ),
   
   ## health nc index2
   health_nc_index2 = case_when(
-    health_services.none == 1 ~ 1,
+    health_services.none == 1 | health_services.dnk == 1 | health_services.other == 1 ~ 1,
     health_services.prim_hc == 1 & health_services.vaccinations == 1 & health_services.child_hc == 1 & health_services.maternal_hc == 1 & health_services.nutrition_services == 1 & health_services.hiv_counsell_testing == 1 & health_services.mental_health_services == 1 ~ 0
   ),
   
@@ -412,8 +416,8 @@ data_indicators <- data %>% mutate(
   ### Nutrition Non-Critical Indicators
   ## nutrition nc index1
   nutrition_nc_index1 = case_when(
-    nutrition_distributions.none == 1 ~ 1,
-    nutrition_distributions.muac_tape == 1 & nutrition_distributions.plumpy == 1 & nutrition_distributions.super_cereal_plus == 1 & nutrition_distributions.therap_dairy == 1 ~ 0
+    nutrition_distributions.none == 1 | nutrition_distributions.dnk == 1 ~ 1,
+    nutrition_distributions.muac_tape == 1 | nutrition_distributions.plumpy == 1 | nutrition_distributions.super_cereal_plus == 1 | nutrition_distributions.therap_dairy == 1 ~ 0
   ),
   
   ## nutrition nc index2
@@ -511,7 +515,7 @@ data_indicators <- data %>% mutate(
   ### HLP Critical Indicators
   ## hlp index1
   hlp_index1 = case_when(
-    housing_property_incidences.confiscation_property == 1 & housing_property_incidences.illegal_occupation == 1 ~ 4,
+    housing_property_incidences.confiscation_property == 1 | housing_property_incidences.illegal_occupation == 1 ~ 4,
     housing_property_incidences.encroachment_boundary_disputes == 1 ~ 3,
     housing_property_incidences.damaged_inadequate_accomodation == 1 ~ 2,
     housing_property_incidences.dnk == 1 ~ 1
@@ -527,7 +531,7 @@ data_indicators <- data %>% mutate(
   hlp_index3 = case_when(
     rate_likelihood_eviction == "very_high" ~ 4,
     rate_likelihood_eviction == "moderate_moderate" ~ 3,
-    rate_likelihood_eviction == "low" ~ 1
+    rate_likelihood_eviction %in% c("low", "pnta") ~ 1
   ),
   
   ### HLP Non-Critical Indicators
@@ -548,16 +552,16 @@ data_indicators <- data %>% mutate(
   
   ## food_security_index2
   food_sec_index2 = case_when(
-    foodsecurity_access_barriers.sec_issues == 1 & foodsecurity_access_barriers.harassment_way_distribution_site == 1 ~ 4,
-    foodsecurity_access_barriers.natural_causes == 1 & foodsecurity_access_barriers.no_funct_market == 1 & foodsecurity_access_barriers.inability_refusal_government_foodaid == 1 & foodsecurity_access_barriers.refusal_ngo_foodaid == 1 & foodsecurity_access_barriers.accessing_pay_portion_gatekeeper == 1 & foodsecurity_access_barriers.accessing_pay_portion_landlord == 1 ~ 3,
-    foodsecurity_access_barriers.no_land_livestock == 1 & foodsecurity_access_barriers.econ_causes == 1 & foodsecurity_access_barriers.social_cultural_causes == 1 & foodsecurity_access_barriers.perception_beliefs == 1 ~ 2
+    foodsecurity_access_barriers.sec_issues == 1 | foodsecurity_access_barriers.harassment_way_distribution_site == 1 ~ 4,
+    foodsecurity_access_barriers.natural_causes == 1 | foodsecurity_access_barriers.no_funct_market == 1 | foodsecurity_access_barriers.inability_refusal_government_foodaid == 1 | foodsecurity_access_barriers.refusal_ngo_foodaid == 1 | foodsecurity_access_barriers.accessing_pay_portion_gatekeeper == 1 | foodsecurity_access_barriers.accessing_pay_portion_landlord == 1 ~ 3,
+    foodsecurity_access_barriers.no_land_livestock == 1 | foodsecurity_access_barriers.econ_causes == 1 | foodsecurity_access_barriers.social_cultural_causes == 1 | foodsecurity_access_barriers.perception_beliefs == 1 ~ 2
   ),
   
   ## food security index3
   food_sec_index3 = case_when(
-    foodsecurity_coping_food.gather_wild_food == 1 & foodsecurity_coping_food.gather_firewood == 1 & foodsecurity_coping_food.consume_seeds == 1 & foodsecurity_coping_food.displacement_camp == 1 & foodsecurity_coping_food.limit_meal_size == 1 & foodsecurity_coping_food.only_children_eat == 1 & foodsecurity_coping_food.reduce_meals == 1 & foodsecurity_coping_food.skip_days == 1 ~ 4,
-    foodsecurity_coping_food.sell_home_assets == 1 & foodsecurity_coping_food.sell_livestock == 1 & foodsecurity_coping_food.slaughter_livestock == 1 & foodsecurity_coping_food.hunting == 1 & foodsecurity_coping_food.fishing == 1 ~ 3,
-    foodsecurity_coping_food.borrow_food == 1 & foodsecurity_coping_food.household_begs == 1 & foodsecurity_coping_food.borrow_money == 1 & foodsecurity_coping_food.send_children_to_neighbors == 1 & foodsecurity_coping_food.less_expensive_food == 1 ~ 2
+    foodsecurity_coping_food.gather_wild_food == 1 | foodsecurity_coping_food.gather_firewood == 1 | foodsecurity_coping_food.consume_seeds == 1 | foodsecurity_coping_food.displacement_camp == 1 | foodsecurity_coping_food.limit_meal_size == 1 | foodsecurity_coping_food.only_children_eat == 1 | foodsecurity_coping_food.reduce_meals == 1 | foodsecurity_coping_food.skip_days == 1 ~ 4,
+    foodsecurity_coping_food.sell_home_assets == 1 | foodsecurity_coping_food.sell_livestock == 1 | foodsecurity_coping_food.slaughter_livestock == 1 | foodsecurity_coping_food.hunting == 1 | foodsecurity_coping_food.fishing == 1 ~ 3,
+    foodsecurity_coping_food.borrow_food == 1 | foodsecurity_coping_food.household_begs == 1 | foodsecurity_coping_food.borrow_money == 1 | foodsecurity_coping_food.send_children_to_neighbors == 1 | foodsecurity_coping_food.less_expensive_food == 1 ~ 2
   ),
   
   ### Food Security Non-Critical Indicators
@@ -607,59 +611,6 @@ data_indicators <- data %>% mutate(
   food_sec_nc_index8 = case_when(
     foodsecurity_access_distance_min == "more_60" ~ 1,
     foodsecurity_access_distance_min %in% c("less_15", "1530", "3160") ~ 0
-  ),
-  
-  ### Access Districts
-  ## overall B
-  overall = case_when(
-    localisation_district_label %in% c("Belet Weyne",
-                                       "Jowhar",
-                                       "Balcad",
-                                       "Dharkenley",
-                                       "Daynile",
-                                       "Kahda",
-                                       "Kismaayo",
-                                       "Luuq",
-                                       "Baardheere",
-                                       "Doolow",
-                                       "Afmadow",
-                                       "Garbahaarey",
-                                       "Ceel Waaq",
-                                       "Belet Xaawo",
-                                       "Bossaso",
-                                       "Buuhoodle",
-                                       "Xudun",
-                                       "Laasqoray",
-                                       "Marka",
-                                       "Afgooye",
-                                       "Wanla Weyn",
-                                       "Baydhaba",
-                                       "Diinsoor",
-                                       "Qansax Dheere",
-                                       "Xudur",
-                                       "Ceel Barde",
-                                       "Waajid") ~ "B",
-    
-    localisation_district_label %in% c("Gaalkacyo",
-                                       "Galdogob",
-                                       "Hobyo",
-                                       "Dhuusamarreeb",
-                                       "Cabudwaaq",
-                                       "Cadaado",
-                                       "Qardho",
-                                       "Garoowe",
-                                       "Burtinle",
-                                       "Borama",
-                                       "Baki",
-                                       "Lughaye",
-                                       "Hargeysa",
-                                       "Burco",
-                                       "Owdweyne",
-                                       "Sheikh",
-                                       "Laas Caanood",
-                                       "Caynabo",
-                                       "Ceerigaabo",
-                                       "Ceel Afweyn") ~ "C"
   )
   
 )#
