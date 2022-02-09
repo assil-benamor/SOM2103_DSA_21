@@ -61,6 +61,7 @@ data[multipleSelectQuestions] <- sapply(data[multipleSelectQuestions],as.numeric
 
 # data [data == 999] <- NA
 data [data == "dnk"] <- NA
+data [data == "Yes"] <- "yes"
 
 
 ## Cleaning the env
@@ -146,13 +147,20 @@ select_one_type2_1 <- import("input/aggregation/Data aggregation plan_IDP Site l
   pull(name)
 
 
-select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type2_1,
-                      .funs = fn_select_one_mode_nc_correction,
-                      subset_var = .$"ki_role",
-                      role = c("comm_leader", "site_manager", "gatekeeper")) 
+# select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>% 
+#   dplyr::summarize_at(.vars = select_one_type2_1,
+#                       .funs = dodo,
+#                       subset_var = .$"ki_role",
+#                       role = c("comm_leader", "site_manager", "gatekeeper")) 
 
-
+unique_idps <- data %>% pull(idp_code) %>% unique()
+select_one_outputs$type2_1 <- do.call("rbind", map(unique_idps, ~ cbind(idp_code = .x ,data %>% filter(idp_code == .x) %>% 
+                                            dplyr::summarize_at(.vars = select_one_type2_1,
+                                                                .funs = fn_select_one_mode_nc_correction,
+                                                                subset_var = .$"ki_role",
+                                                                role = c("comm_leader", "site_manager", "gatekeeper"))))) 
+  
+  
 
 ######  2.2: NC correction using pwd rep 
 
@@ -459,7 +467,7 @@ all_questions_output <- all_questions_output %>%
  ##### Exporting the results ##### 
  
  
- write.csv(all_questions_output,"output/Aggregation/aggregation_output_04_02.csv",
+ write.csv(all_questions_output,"output/Aggregation/aggregation_output_09_02.csv",
           na = "",row.names = F)
 
 
