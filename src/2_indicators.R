@@ -52,7 +52,8 @@ data_indicators <- data %>% mutate(
   ## wash_nc_index1
   wash_nc_index = case_when(
     water_access_problem == "yes" | water_access_barriers.waterpoints_disabilities == 1 | water_access_barriers.fetching_activity == 1 | water_access_barriers.insufficient_points == 1 ~ 1,
-    water_access_problem == "yes" | water_access_barriers.no_problem == 1 ~ 0
+    water_access_problem == "yes" | water_access_barriers.no_problem == 1 ~ 0,
+    is.na(water_access_problem) ~ 0
   ),
   
   ## wash_nc_index2
@@ -64,13 +65,15 @@ data_indicators <- data %>% mutate(
   ## wash_nc_index3
   wash_nc_index3 = case_when(
     water_sources_primary %in% c("berkad", "river", "unprot_well") & water_treatment_proportion %in% c("none", "few") ~ 1,
-    water_sources_primary %in% c("berkad", "river", "unprot_well") & water_treatment_proportion %in% c("some", "many", "all") ~ 0
+    water_sources_primary %in% c("berkad", "river", "unprot_well") & water_treatment_proportion %in% c("some", "many", "all") ~ 0,
+    is.na(water_sources_primary) ~ 0
   ),
   
   ## wash_nc_index4
   wash_nc_index4 = case_when(
     latrines_accessible_pwd %in% c("none", "few") ~ 1,
-    latrines_accessible_pwd %in% c("some", "many", "all") ~ 0
+    latrines_accessible_pwd %in% c("some", "many", "all") ~ 0,
+    is.na(latrines_accessible_pwd) ~ 0
   ),
   
   ## wash_nc_index5
@@ -500,7 +503,9 @@ data_indicators <- data %>% mutate(
   ## nfi nc index4
   nfi_nc_index4 = case_when(
     cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.nfi_kit == 0 ~ 1,
-    cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.nfi_kit == 1 ~ 0 
+    cccm_idps_arrival %in% c("fourtosixmonths", "morethansixmonths") & support.nfi_kit == 1 ~ 0,
+    is.na(cccm_idps_arrival) ~ 0
+    
   ),
   
   ## nfi nc index5
