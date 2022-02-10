@@ -147,20 +147,12 @@ select_one_type2_1 <- import("input/aggregation/Data aggregation plan_IDP Site l
   pull(name)
 
 
-# select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>% 
-#   dplyr::summarize_at(.vars = select_one_type2_1,
-#                       .funs = dodo,
-#                       subset_var = .$"ki_role",
-#                       role = c("comm_leader", "site_manager", "gatekeeper")) 
+select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>%
+  do(dplyr::summarize_at(.,.vars = select_one_type2_1,
+                      .funs = dodo,
+                      subset_var = .$"ki_role",
+                      role = c("comm_leader", "site_manager", "gatekeeper")))
 
-unique_idps <- data %>% pull(idp_code) %>% unique()
-select_one_outputs$type2_1 <- do.call("rbind", map(unique_idps, ~ cbind(idp_code = .x ,data %>% filter(idp_code == .x) %>% 
-                                            dplyr::summarize_at(.vars = select_one_type2_1,
-                                                                .funs = fn_select_one_mode_nc_correction,
-                                                                subset_var = .$"ki_role",
-                                                                role = c("comm_leader", "site_manager", "gatekeeper"))))) 
-  
-  
 
 ######  2.2: NC correction using pwd rep 
 
@@ -175,10 +167,11 @@ select_one_type2_2 <- import("input/aggregation/Data aggregation plan_IDP Site l
   pull(name)
 
 select_one_outputs$type2_2 <- data %>% group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type2_2,
+  do(dplyr::summarize_at(.,.vars = select_one_type2_2,
                       .funs = fn_select_one_mode_nc_correction,
                       subset_var = .$"ki_role",
-                      role = c("resident_site_pwd_rep")) 
+                      role = c("resident_site_pwd_rep")))
+
 
 ###### 2.3: NC correction using woman rep
 
@@ -193,10 +186,10 @@ select_one_type2_3 <- import("input/aggregation/Data aggregation plan_IDP Site l
   pull(name)
 
 select_one_outputs$type2_3 <- data %>% group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type2_3,
+  do(dplyr::summarize_at(.,.vars = select_one_type2_3,
                       .funs = fn_select_one_mode_nc_correction,
                       subset_var = .$"ki_role",
-                      role = c("women_comm_rep")) 
+                      role = c("women_comm_rep")))
 
 
 
@@ -215,10 +208,10 @@ select_one_type3 <- import("input/aggregation/Data aggregation plan_IDP Site lev
 
 select_one_outputs$type3 <- data %>% 
   group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type3,
+  do(dplyr::summarize_at(.,.vars = select_one_type3,
                       .funs = fn_select_one_mode_subset,
                       subset_var = .$"ki_role",
-                      role = c("comm_leader", "site_manager", "gatekeeper")) 
+                      role = c("comm_leader", "site_manager", "gatekeeper")))
 
 
 ######  Type4: subset (women rep) ######  
@@ -235,10 +228,10 @@ select_one_type4 <- import("input/aggregation/Data aggregation plan_IDP Site lev
 
 select_one_outputs$type4 <- data %>% 
   group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type4,
+  do(dplyr::summarize_at(.,.vars = select_one_type4,
                       .funs = fn_select_one_mode_subset,
                       subset_var = .$"ki_role",
-                      role = c("women_comm_rep")) 
+                      role = c("women_comm_rep")))
 
 ######  Type5: subset (women rep/pwd rep ######  
 
@@ -253,10 +246,10 @@ select_one_type5 <- import("input/aggregation/Data aggregation plan_IDP Site lev
 
 select_one_outputs$type5 <- data %>% 
   group_by(.dots = aggregation_column) %>% 
-  dplyr::summarize_at(.vars = select_one_type5,
+  do(dplyr::summarize_at(.,.vars = select_one_type5,
                       .funs = fn_select_one_mode_subset,
                       subset_var = .$"ki_role",
-                      role = c("women_comm_rep","resident_site_pwd_rep")) 
+                      role = c("women_comm_rep","resident_site_pwd_rep")))
 
 ######  Type6: No subset, Yes prevalence ######  
 
@@ -319,10 +312,10 @@ numerical_values_output_all <- data %>% group_by(.dots =aggregation_column) %>%
   dplyr::summarize_at(.vars = numerical_questions_mode_all,.funs = one_sd_mean) 
 
 numerical_values_output_subset <- data %>% group_by(.dots =aggregation_column) %>% 
-  dplyr::summarize_at(.vars = numerical_questions_mode_subset,
+  do(dplyr::summarize_at(.,.vars = numerical_questions_mode_subset,
                       .funs = one_sd_mean_subset,
                       subset_var = .$"ki_role",
-                      role = c("women_comm_rep")) 
+                      role = c("women_comm_rep")))
 
 
 numerical_values_output <- merge(
@@ -467,7 +460,7 @@ all_questions_output <- all_questions_output %>%
  ##### Exporting the results ##### 
  
  
- write.csv(all_questions_output,"output/Aggregation/aggregation_output_09_02.csv",
+ write.csv(all_questions_output,"output/Aggregation/aggregation_output_10_02.csv",
           na = "",row.names = F)
 
 
