@@ -11,7 +11,7 @@ p_load(rio,
        composr)
 
 # laod aggregated data
-data <- read.csv("input/data/aggregation_output_20_01.csv", stringsAsFactors = F)
+data <- read.csv("input/data/aggregation_output_10_02.csv", stringsAsFactors = F)
 
 # create indicator indexes
 data_indicators <- data %>% mutate(
@@ -63,14 +63,14 @@ data_indicators <- data %>% mutate(
   
   ## wash_nc_index3
   wash_nc_index3 = case_when(
-    water_treatment_proportion %in% c("some", "many", "all") ~ 1,
-    water_treatment_proportion == "none" ~ 0
+    water_sources_primary %in% c("berkad", "river", "unprot_well") & water_treatment_proportion %in% c("none", "few") ~ 1,
+    water_sources_primary %in% c("berkad", "river", "unprot_well") & water_treatment_proportion %in% c("some", "many", "all") ~ 0
   ),
   
   ## wash_nc_index4
   wash_nc_index4 = case_when(
-    latrines_accessible_pwd %in% c("some", "many", "all") ~ 1,
-    latrines_accessible_pwd == "none" ~ 0
+    latrines_accessible_pwd %in% c("none", "few") ~ 1,
+    latrines_accessible_pwd %in% c("some", "many", "all") ~ 0
   ),
   
   ## wash_nc_index5
@@ -113,7 +113,10 @@ data_indicators <- data %>% mutate(
   
   ### Protection Non-Critical indicators
   ## protection nc index 1
-  
+  protection_nc_index1 = case_when(
+    protection_womenspace == "no" ~ 1,
+    protection_womenspace == "yes" ~ 0
+  ),
   
   ## protection nc index 2
   protection_nc_index2 = case_when(
@@ -247,7 +250,7 @@ data_indicators <- data %>% mutate(
                    male_health_problems.injuries,
                    male_health_problems.measles,
                    male_health_problems.no_health_issues,
-                   male_health_problems.no_health_issues))) >= 4 ~ 4,
+                   male_health_problems.no_health_issues)), na.rm = T) >= 4 ~ 4,
     
     rowSums(across(c(male_health_problems.malaria,
                      male_health_problems.fever,
@@ -258,7 +261,7 @@ data_indicators <- data %>% mutate(
                      male_health_problems.injuries,
                      male_health_problems.measles,
                      male_health_problems.no_health_issues,
-                     male_health_problems.no_health_issues))) == 3  ~ 3,
+                     male_health_problems.no_health_issues)), na.rm = T) == 3  ~ 3,
     
     rowSums(across(c(male_health_problems.malaria,
                      male_health_problems.fever,
@@ -269,7 +272,7 @@ data_indicators <- data %>% mutate(
                      male_health_problems.injuries,
                      male_health_problems.measles,
                      male_health_problems.no_health_issues,
-                     male_health_problems.no_health_issues))) == 2 ~ 2,
+                     male_health_problems.no_health_issues)), na.rm = T) == 2 ~ 2,
     
     rowSums(across(c(male_health_problems.malaria,
                      male_health_problems.fever,
@@ -280,7 +283,7 @@ data_indicators <- data %>% mutate(
                      male_health_problems.injuries,
                      male_health_problems.measles,
                      male_health_problems.no_health_issues,
-                     male_health_problems.no_health_issues))) == 1 ~ 1
+                     male_health_problems.no_health_issues)), na.rm = T) == 1 ~ 1
   ),
   
   ## health index3
@@ -293,7 +296,7 @@ data_indicators <- data %>% mutate(
                     female_health_problems.gastrointernal,
                     female_health_problems.injuries,
                     female_health_problems.measles,
-                    female_health_problems.no_health_issues))) >= 4 ~ 4,
+                    female_health_problems.no_health_issues)), na.rm = T) >= 4 ~ 4,
     
     rowSums(across(c(female_health_problems.malaria,
                     female_health_problems.fever,
@@ -303,7 +306,7 @@ data_indicators <- data %>% mutate(
                     female_health_problems.gastrointernal,
                     female_health_problems.injuries,
                     female_health_problems.measles,
-                    female_health_problems.no_health_issues))) == 3 ~ 3,
+                    female_health_problems.no_health_issues)), na.rm = T) == 3 ~ 3,
     
     rowSums(across(c(female_health_problems.malaria,
                     female_health_problems.fever,
@@ -313,7 +316,7 @@ data_indicators <- data %>% mutate(
                     female_health_problems.gastrointernal,
                     female_health_problems.injuries,
                     female_health_problems.measles,
-                    female_health_problems.no_health_issues))) == 2 ~ 2,
+                    female_health_problems.no_health_issues)), na.rm = T) == 2 ~ 2,
     
     rowSums(across(c(female_health_problems.malaria,
                     female_health_problems.fever,
@@ -323,7 +326,7 @@ data_indicators <- data %>% mutate(
                     female_health_problems.gastrointernal,
                     female_health_problems.injuries,
                     female_health_problems.measles,
-                    female_health_problems.no_health_issues))) == 1 ~ 1
+                    female_health_problems.no_health_issues)), na.rm = T) == 1 ~ 1
   ),
   
   ## health index4
@@ -439,7 +442,7 @@ data_indicators <- data %>% mutate(
                      nutrition_services.refuse_treatment,
                      nutrition_services.no_medicine,
                      nutrition_services.no_treatment_avail,
-                     nutrition_services.pwd_excluded))) >= 3 ~ 1,
+                     nutrition_services.pwd_excluded)), na.rm = T) >= 3 ~ 1,
     
     rowSums(across(c(nutrition_services.cost,
                      nutrition_services.no_qualified,
@@ -452,7 +455,7 @@ data_indicators <- data %>% mutate(
                      nutrition_services.refuse_treatment,
                      nutrition_services.no_medicine,
                      nutrition_services.no_treatment_avail,
-                     nutrition_services.pwd_excluded))) <= 2 ~ 0
+                     nutrition_services.pwd_excluded)), na.rm = T) <= 2 ~ 0
     
   ),
   
@@ -477,7 +480,7 @@ data_indicators <- data %>% mutate(
                      nfi_items_available.jerry_cans_buckets,
                      nfi_items_available.cooking_utensils,
                      nfi_items_available.mosquito_nets,
-                     nfi_items_available.solar_lamp))) <= 4 ~ 1,
+                     nfi_items_available.solar_lamp)), na.rm = T) <= 4 ~ 1,
     
     rowSums(across(c(nfi_items_available.sleep_mats,
                      nfi_items_available.plastic_sheets,
@@ -485,7 +488,7 @@ data_indicators <- data %>% mutate(
                      nfi_items_available.jerry_cans_buckets,
                      nfi_items_available.cooking_utensils,
                      nfi_items_available.mosquito_nets,
-                     nfi_items_available.solar_lamp))) >= 5 ~ 0
+                     nfi_items_available.solar_lamp)), na.rm = T) >= 5 ~ 0
   ),
   
   ## nfi nc index3
