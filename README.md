@@ -30,7 +30,7 @@
 
 The Detailed Site Assessment (DSA) was initiated in coordination with the Camp Coordination and Camp Management (CCCM) Cluster in order to provide the humanitarian community with up-to-date information on the location of IDP sites, the conditions and capacity of the sites, and an estimate of the severity of humanitarian needs of residents.
 
-This project contains the aggregation and analysis scripts of the 2022 DSA. 
+This project contains the aggregation and analysis scripts of the 2021 DSA. 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -79,10 +79,10 @@ This project contains the aggregation and analysis scripts of the 2022 DSA.
     - [x] Numerical
     - [x] Skip logic
     - [x] GPS coordinates
-- [ ] Indicators
+- [x] Indicators
 - [ ] Output production
-    - [ ] Results table
-
+    - [x] Results table
+    - [ ] InDesign Data Merge
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

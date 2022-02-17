@@ -58,10 +58,14 @@ multipleSelectQuestions <- grep(pattern="\\.", colnames(data))
 data[multipleSelectQuestions] <- sapply(data[multipleSelectQuestions],as.numeric)
 
 
+## Recoding some typos in the data 
+data$water_treatment_proportion <- str_to_lower(data$water_treatment_proportion ) 
+
 
 # data [data == 999] <- NA
 data [data == "dnk"] <- NA
 data [data == "Yes"] <- "yes"
+
 
 
 ## Cleaning the env
@@ -457,12 +461,18 @@ all_questions_output <- all_questions_output %>%
  
  all_questions_output <- left_join(all_questions_output,gps_aggregation, by = "idp_code")
 
- ##### Exporting the results ##### 
+ ##### Joining data with the cccm master list and exporting the results ##### 
  
+ master_list <- rio::import("input/CCCM list/IDP Site Master List  - 06 Oct 2021 .xlsx",sheet = 2) %>% 
+   select(1,4) %>% 
+   setNames(c("idp_code","settlement_name"))
  
- write.csv(all_questions_output,"output/Aggregation/aggregation_output_10_02.csv",
-          na = "",row.names = F)
 
+final_output <- left_join(all_questions_output,master_list) %>% select(1:5,(ncol(.)-2):ncol(.),6:(ncol(.)-3))
+ 
+
+write.csv(final_output,"output/Aggregation/DSA_aggregated_data_11_02.csv",
+          na = "",row.names = F)
 
 
 

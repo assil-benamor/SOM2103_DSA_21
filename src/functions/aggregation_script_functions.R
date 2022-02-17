@@ -425,9 +425,34 @@ select_multiple_apply_constraints <- function(df) {
 #   
 # }
 
+dodo <- function(x,subset_var=NULL,role=NULL) {
+  
+  if(all(is.na(x))){return(NA)}
+  
+  
+  if (fn_select_one_mode(x) != 'NC') {
+    return(fn_select_one_mode(x))
+  }
+  
+  if (hasArg(subset_var) & hasArg(role)) {
+    
+    if(length(which(subset_var %in% role))!=0) {
+      x <- x[which(subset_var %in% role)]
+    }
+    
+    
+  }
+  
+  uniqx <- unique(na.omit(x))
+  uniqx[which.max(tabulate(match(x, uniqx)))]
+  
+}
+
+
 fn_select_one_mode_nc_correction <- function(x,subset_var=NULL,role=NULL) {
   
   if(all(is.na(x))){return(NA)}
+  
   
   if (fn_select_one_mode(x) != 'NC') {
       return(fn_select_one_mode(x))
@@ -439,6 +464,7 @@ fn_select_one_mode_nc_correction <- function(x,subset_var=NULL,role=NULL) {
       x <- x[which(subset_var %in% role)]
     }
     
+
   }
   
   uniqx <- unique(na.omit(x))
