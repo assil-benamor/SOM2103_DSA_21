@@ -11,11 +11,10 @@ p_load(rio,
        composr)
 
 # laod aggregated data
-data <- read.csv("output/Aggregation/DSA_aggregated_data_11_02.csv", stringsAsFactors = F)
+data <- read.csv("output/Aggregation/DSA_aggregated_data.csv", stringsAsFactors = F)
 
 # create indicator indexes
 data_indicators <- data %>% mutate(
-  
   #### WASH Critical  #### 
   ## WASH Index 1
   wash_index1 = case_when(
@@ -49,7 +48,7 @@ data_indicators <- data %>% mutate(
     hygiene_handwashingfacilities %in% c("few", "none") ~ 4
   ),
   
-  #### WASH Non-Critical #### 
+  #### WASH Non-Critical  #### 
   ## wash_nc_index1
   wash_nc_index = case_when(
     water_access_problem == "no" | water_access_barriers.no_problem == 1 ~ 0,
@@ -234,7 +233,7 @@ data_indicators <- data %>% mutate(
       education_barriers_girls.parents_no_approve_curric == 1 | education_barriers_girls.cultural_beliefs == 1 | education_barriers_girls.no_aware_education_opportunities == 1 ~ 1
   ),
   
-  #### Health Critical Indicators #### 
+  #### Health Critical Indicators  #### 
   ## health_index1
   health_index1 = case_when(
     health_access_distance_min == "more_60" ~ 4,
@@ -246,15 +245,15 @@ data_indicators <- data %>% mutate(
   ## health index2
   health_index2 = case_when(
     rowSums(across(c(male_health_problems.malaria,
-                   male_health_problems.fever,
-                   male_health_problems.awd_cholera,
-                   male_health_problems.resp_problems,
-                   male_health_problems.malnutrition,
-                   male_health_problems.gastrointernal,
-                   male_health_problems.injuries,
-                   male_health_problems.measles,
-                   male_health_problems.no_health_issues,
-                   male_health_problems.no_health_issues)), na.rm = T) >= 4 ~ 4,
+                     male_health_problems.fever,
+                     male_health_problems.awd_cholera,
+                     male_health_problems.resp_problems,
+                     male_health_problems.malnutrition,
+                     male_health_problems.gastrointernal,
+                     male_health_problems.injuries,
+                     male_health_problems.measles,
+                     male_health_problems.no_health_issues,
+                     male_health_problems.no_health_issues)), na.rm = T) >= 4 ~ 4,
     
     rowSums(across(c(male_health_problems.malaria,
                      male_health_problems.fever,
@@ -293,44 +292,44 @@ data_indicators <- data %>% mutate(
   ## health index3
   health_index3 = case_when(
     rowSums(across(c(female_health_problems.malaria,
-                    female_health_problems.fever,
-                    female_health_problems.awd_cholera,
-                    female_health_problems.resp_problems,
-                    female_health_problems.malnutrition,
-                    female_health_problems.gastrointernal,
-                    female_health_problems.injuries,
-                    female_health_problems.measles,
-                    female_health_problems.no_health_issues)), na.rm = T) >= 4 ~ 4,
+                     female_health_problems.fever,
+                     female_health_problems.awd_cholera,
+                     female_health_problems.resp_problems,
+                     female_health_problems.malnutrition,
+                     female_health_problems.gastrointernal,
+                     female_health_problems.injuries,
+                     female_health_problems.measles,
+                     female_health_problems.no_health_issues)), na.rm = T) >= 4 ~ 4,
     
     rowSums(across(c(female_health_problems.malaria,
-                    female_health_problems.fever,
-                    female_health_problems.awd_cholera,
-                    female_health_problems.resp_problems,
-                    female_health_problems.malnutrition,
-                    female_health_problems.gastrointernal,
-                    female_health_problems.injuries,
-                    female_health_problems.measles,
-                    female_health_problems.no_health_issues)), na.rm = T) == 3 ~ 3,
+                     female_health_problems.fever,
+                     female_health_problems.awd_cholera,
+                     female_health_problems.resp_problems,
+                     female_health_problems.malnutrition,
+                     female_health_problems.gastrointernal,
+                     female_health_problems.injuries,
+                     female_health_problems.measles,
+                     female_health_problems.no_health_issues)), na.rm = T) == 3 ~ 3,
     
     rowSums(across(c(female_health_problems.malaria,
-                    female_health_problems.fever,
-                    female_health_problems.awd_cholera,
-                    female_health_problems.resp_problems,
-                    female_health_problems.malnutrition,
-                    female_health_problems.gastrointernal,
-                    female_health_problems.injuries,
-                    female_health_problems.measles,
-                    female_health_problems.no_health_issues)), na.rm = T) == 2 ~ 2,
+                     female_health_problems.fever,
+                     female_health_problems.awd_cholera,
+                     female_health_problems.resp_problems,
+                     female_health_problems.malnutrition,
+                     female_health_problems.gastrointernal,
+                     female_health_problems.injuries,
+                     female_health_problems.measles,
+                     female_health_problems.no_health_issues)), na.rm = T) == 2 ~ 2,
     
     rowSums(across(c(female_health_problems.malaria,
-                    female_health_problems.fever,
-                    female_health_problems.awd_cholera,
-                    female_health_problems.resp_problems,
-                    female_health_problems.malnutrition,
-                    female_health_problems.gastrointernal,
-                    female_health_problems.injuries,
-                    female_health_problems.measles,
-                    female_health_problems.no_health_issues)), na.rm = T) == 1 ~ 1
+                     female_health_problems.fever,
+                     female_health_problems.awd_cholera,
+                     female_health_problems.resp_problems,
+                     female_health_problems.malnutrition,
+                     female_health_problems.gastrointernal,
+                     female_health_problems.injuries,
+                     female_health_problems.measles,
+                     female_health_problems.no_health_issues)), na.rm = T) == 1 ~ 1
   ),
   
   ## health index4
@@ -341,7 +340,7 @@ data_indicators <- data %>% mutate(
     health_women_unskilledhealthpersonnel == "none" ~ 1
   ),
   
-  #### Health Non-Critical Indicators #### 
+  #### Health Non-Critical Indicators  #### 
   ## health nc index1
   health_nc_index1 = case_when(
     health_facilities.no_health_facility == 1 ~ 1,
@@ -420,7 +419,7 @@ data_indicators <- data %>% mutate(
     health_barriers.no_problem == 1 ~ 0
   ),
   
-  #### Nutrition Non-Critical Indicators #### 
+  #### Nutrition Non-Critical Indicators  #### 
   ## nutrition nc index1
   nutrition_nc_index1 = case_when(
     nutrition_distributions.none == 1 | nutrition_distributions.dnk == 1 ~ 1,
@@ -463,8 +462,8 @@ data_indicators <- data %>% mutate(
     
   ),
   
-  #### NFI Critical Indicators #### 
-  ## nfi_index1
+  #### NFI Critical Indicators  #### 
+  ## nfi_inxex1
   nfi_index1 = case_when(
     none == "all" ~ 4,
     none %in% c("some", "many") ~ 3,
@@ -472,7 +471,7 @@ data_indicators <- data %>% mutate(
     none == "none" ~ 1
   ),
   
-  #### NFI Non-Critical Indicators #### 
+  #### NFI Non-Critical Indicators
   ## nfi nc index1
   nfi_nc_index1 = case_when(
     nfi_access == "no" | nfi_access_dist_min_int > 60 ~ 1,
@@ -525,7 +524,7 @@ data_indicators <- data %>% mutate(
     shelter_types %in% c("cgi_wall_roof", "mud_stick_cgi", "plywood_cgi", "stone_brick_cgi1", "stone_brick_cgi2") ~ 0
   ),
   
-  #### HLP Critical Indicators #### 
+  #### HLP Critical Indicators  #### 
   ## hlp index1
   hlp_index1 = case_when(
     housing_property_incidences.confiscation_property == 1 | housing_property_incidences.illegal_occupation == 1 ~ 4,
@@ -547,7 +546,7 @@ data_indicators <- data %>% mutate(
     rate_likelihood_eviction %in% c("low", "pnta") ~ 1
   ),
   
-  #### HLP Non-Critical Indicators #### 
+  #### HLP Non-Critical Indicators  #### 
   ## hlp nc index1
   hlp_nc_index1 = case_when(
     evictions_landowner == "no_owner" ~ 1,
@@ -561,14 +560,8 @@ data_indicators <- data %>% mutate(
     is.na(type_land_agreement) ~ 0
   ),
   
-  #### Food Security Critical Indicators #### 
-  ## food security index1
-  food_sec_index1 = case_when(
-    foodsecurity_livelihood == "all" ~ 4,
-    foodsecurity_livelihood == "many" ~ 3,
-    foodsecurity_livelihood %in% c("few", "some") ~ 2,
-    foodsecurity_livelihood == "NC" ~ 1
-  ),
+  #### Food Security Critical Indicators  #### 
+  ## food security index1 - the indicator is removed
   
   ## food_security_index2
   food_sec_index2 = case_when(
@@ -584,7 +577,7 @@ data_indicators <- data %>% mutate(
     foodsecurity_coping_food.borrow_food == 1 | foodsecurity_coping_food.household_begs == 1 | foodsecurity_coping_food.borrow_money == 1 | foodsecurity_coping_food.send_children_to_neighbors == 1 | foodsecurity_coping_food.less_expensive_food == 1 ~ 2
   ),
   
-  #### Food Security Non-Critical Indicators #### 
+  #### Food Security Non-Critical Indicators  #### 
   ## food security nc index1
   food_sec_nc_index1 = case_when(
     foodsecurity_primary %in% c("food_assist_ngo", "food_assist_govt", "gifts_friends_family", "borrow_debt") ~ 1,
@@ -631,32 +624,30 @@ data_indicators <- data %>% mutate(
   food_sec_nc_index8 = case_when(
     foodsecurity_access_distance_min == "more_60" ~ 1,
     foodsecurity_access_distance_min %in% c("less_15", "1530", "3160") ~ 0
+  ),
+  
+  ## food security nc index9
+  food_sec_nc_index9 = case_when(
+    support.cash == 1 | support.food_distrib == 1 ~ 0,
+    support.cash == 0 | support.food_distrib == 0 ~ 1
   )
   
-  #### Additional Indicators ####
+) %>%  mutate(
+#### Additional indicators ####
+  additional_indicator_hlp = case_when(
+    evictions_landowner %in% c("no_owner", "dnk") & evictions_tenureagreement == "no" ~ 1,
+    TRUE ~ 0
+    ),
   
-) %>% mutate(
-  hlp_additional_index1 = case_when(
-    evictions_landowner %in% c("no_owner") ~ 1,
-    evictions_landowner %in% c("fed_govt", "local_authority_govt", "mixed", "private_owner","pnta") ~ 0
-  ),
 
-  hlp_additional_index2 = case_when(
-    evictions_tenureagreement == "no" ~ 1,
-    evictions_tenureagreement == "yes" ~ 0
+  additional_indicator_minority = case_when(
+    belonging_minority_group == "yes" & support_access_impediments.minorities == 1 ~ 1,
+    TRUE ~0 
   ),
+  
+  
 
-  minority_additional_index1 = case_when(
-    belonging_minority_group == "yes" ~ 1,
-    belonging_minority_group == "no" ~ 0
-  ),
-
-  minority_additional_index2 = case_when(
-    support_access_impediments.minorities == 1 ~ 1,
-    support_access_impediments.women == 1 | support_access_impediments.children == 1 | support_access_impediments.elders == 1 | support_access_impediments.disabled == 1 | support_access_impediments.marginalised == 1 ~ 0
-  ),
-
-  humanitarian_access_additional_indicator = case_when(
+  additional_indicator_access = case_when(
     localisation_district_label %in% c("Belet Weyne",
                                        "Jowhar",
                                        "Balcad",
@@ -683,8 +674,8 @@ data_indicators <- data %>% mutate(
                                        "Qansax Dheere",
                                        "Xudur",
                                        "Ceel Barde",
-                                       "Waajid") ~ "B",
-
+                                       "Waajid") ~ 1,
+    
     localisation_district_label %in% c("Gaalkacyo",
                                        "Galdogob",
                                        "Hobyo",
@@ -704,9 +695,12 @@ data_indicators <- data %>% mutate(
                                        "Laas Caanood",
                                        "Caynabo",
                                        "Ceerigaabo",
-                                       "Ceel Afweyn") ~ "C"
+                                       "Ceel Afweyn") ~ 0
   )
 )
+
+
+
 
 
 

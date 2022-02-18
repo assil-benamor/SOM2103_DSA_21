@@ -66,7 +66,6 @@ res <- generate_results_table(data = data,
 # 
 # res[is.nan(res)] <- NA
 
-
 export_table(res,"output/Results table/")
 
 

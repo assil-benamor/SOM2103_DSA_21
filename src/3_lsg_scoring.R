@@ -132,6 +132,7 @@ output1 <- data_indicators %>% select(
   "settlement_name",
   "site_duration_score",
   matches("index[[:digit:]]"),
+  starts_with("additional_"),
   ends_with("_score"),
   ends_with("_need"),
   number_of_needs) 
@@ -143,11 +144,12 @@ output2 <- data_indicators %>% select(
   "idp_code",
   "settlement_name",
   "site_duration_score",
+  starts_with("additional_"),
   ends_with("_need"),
   number_of_needs) 
 
 
-openxlsx::write.xlsx(list(output2,output1),"DSA_sites_matrix.xlsx")
+openxlsx::write.xlsx(list(output2,output1),"output/Prioritization matrix/DSA_sites_matrix.xlsx")
 
 write.csv(data_indicators,'output/Indicators/aggregation_output_plus_lsg.csv',row.names = F)
 
