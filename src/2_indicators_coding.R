@@ -563,6 +563,7 @@ data_indicators <- data %>% mutate(
   #### Food Security Critical Indicators  #### 
   ## food security index1 - the indicator is removed
   
+  
   ## food_security_index2
   food_sec_index2 = case_when(
     foodsecurity_access_barriers.sec_issues == 1 | foodsecurity_access_barriers.harassment_way_distribution_site == 1 ~ 4,
@@ -635,7 +636,7 @@ data_indicators <- data %>% mutate(
 ) %>%  mutate(
 #### Additional indicators ####
   additional_indicator_hlp = case_when(
-    evictions_landowner %in% c("no_owner", "dnk") & evictions_tenureagreement == "no" ~ 1,
+    evictions_landowner %in% c("no_owner") & evictions_tenureagreement == "no" ~ 1,
     TRUE ~ 0
     ),
   
@@ -646,7 +647,6 @@ data_indicators <- data %>% mutate(
   ),
   
   
-
   additional_indicator_access = case_when(
     localisation_district_label %in% c("Belet Weyne",
                                        "Jowhar",
