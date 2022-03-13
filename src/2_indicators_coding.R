@@ -635,16 +635,16 @@ data_indicators <- data %>% mutate(
   
 ) %>%  mutate(
 #### Additional indicators ####
-  additional_indicator_hlp = case_when(
-    evictions_landowner %in% c("no_owner") & evictions_tenureagreement == "no" ~ 1,
-    TRUE ~ 0
-    ),
-  
+  # additional_indicator_hlp = case_when(
+  #   evictions_landowner %in% c("no_owner") & evictions_tenureagreement == "no" ~ 1,
+  #   TRUE ~ 0
+  #   ),
 
-  additional_indicator_minority = case_when(
-    belonging_minority_group == "yes" & support_access_impediments.minorities == 1 ~ 1,
-    TRUE ~0 
-  ),
+
+  # additional_indicator_minority = case_when(
+  #   belonging_minority_group == "yes" & support_access_impediments.minorities == 1 ~ 1,
+  #   TRUE ~0 
+  # ),
   
   
   additional_indicator_access = case_when(
@@ -697,11 +697,31 @@ data_indicators <- data %>% mutate(
                                        "Ceerigaabo",
                                        "Ceel Afweyn") ~ 0
   )
-)
+) %>%  mutate(
+  minorities_binary_1 = ifelse(nfi_access_impediments.minorities == 1 , 1 , 0),
+  minorities_binary_2 = ifelse(sanitation_access_impediments.minorities == 1 , 1 , 0),
+  minorities_binary_3 = ifelse(support_access_impediments.minorities == 1 , 1 , 0),
+  minorities_binary_4 = ifelse(residents_no_food=="minority_headed_hh" , 1 , 0),
+  minorities_binary_5 = ifelse(unwilling_make_complaint_feedback == "minority_clan_member" , 1 , 0),
+  
+  pwd_binary_1 = ifelse(sanitation_access_impediments.disabled == 1,1,0),
+  pwd_binary_2 = ifelse(health_barriers.pwd_excluded == 1,1,0),
+  pwd_binary_3 = ifelse(support_access_impediments.disabled == 1,1,0),
+  pwd_binary_4 = ifelse(pwd_obstacles_complaints.fear_harassment == 1,1,0),
+  pwd_binary_5 = ifelse(pwd_obstacles_complaints.lack_information_raise_complain == 1,1,0),
+  pwd_binary_6 = ifelse(reason_nt_using_complaint_mechanisms.difficulty_pwd == 1,1,0)
+
+  
+) %>% mutate(
+  
+  additional_minorities_index = ifelse(rowSums(.[grep("minorities_binary_",names(.))], na.rm = TRUE)>0,1,0),
+  additional_idp_index = ifelse(cccm_idps_arrived < 100 , 0 , 1),
+  additional_pwd_index = ifelse(rowSums(.[grep("pwd_binary_",names(.))], na.rm = TRUE)>0,1,0),
+
+  ) %>% select(-grep("_binary_",names(.)))
 
 
-
-
-
-
+# data_indicators$additional_minorities_index %>% table()
+# data_indicators$additional_idp_index %>% table()
+# data_indicators$additional_pwd_index %>% table()
 

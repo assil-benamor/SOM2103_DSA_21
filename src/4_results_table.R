@@ -57,7 +57,7 @@ res <- generate_results_table(data = data,
                               weights.column = NULL,
                               use_labels = T,
                               labels_column = "label::English (en)",
-                              "localisation_region_label"
+                             
 
 )
 
