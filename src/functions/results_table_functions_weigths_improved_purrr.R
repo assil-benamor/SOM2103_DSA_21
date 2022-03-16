@@ -50,6 +50,8 @@ append_labels <- function(table_maker_output,labels_column) {
                                              mutate(question = .x) %>% mutate(key=paste0(question,"####",answer)) %>% select(key,label)}
   ))
   
+  
+  
   df <- left_join(df,
             rbind(rbind(questions_labels,answers_labels),
                   c("Average","Average")),by="key"
