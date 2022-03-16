@@ -719,7 +719,7 @@ data_indicators <- data %>% mutate(
   additional_pwd_index = ifelse(rowSums(.[grep("pwd_binary_",names(.))], na.rm = TRUE)>0,1,0),
 
   ) %>% select(-grep("_binary_",names(.)))
-
+  
 
 # data_indicators$additional_minorities_index %>% table()
 # data_indicators$additional_idp_index %>% table()

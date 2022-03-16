@@ -186,7 +186,7 @@ data_merge_gen_v2 <- function(data,questionnaire,questions,liste_of_questions,ch
       
     }
     else{
-      if (str_detect(question,pattern = "(_nc_index|_need$)") &
+      if (str_detect(question,pattern = "(_nc_index|_need$|_binary_|additional_minorities_index)") &
           !str_detect(question,pattern = "\\.")) {
         for (i in 0:1) {
           ch = sprintf("%s_%s = percent_response(%s, .,'%s', group = !!get_group(.)),",

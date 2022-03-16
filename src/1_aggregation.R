@@ -153,9 +153,10 @@ select_one_type2_1 <- import("input/aggregation/Data aggregation plan_IDP Site l
 
 select_one_outputs$type2_1 <- data %>% group_by(.dots = aggregation_column) %>%
   do(dplyr::summarize_at(.,.vars = select_one_type2_1,
-                      .funs = dodo,
+                      .funs = fn_select_one_mode_nc_correction,
                       subset_var = .$"ki_role",
                       role = c("comm_leader", "site_manager", "gatekeeper")))
+
 
 
 ######  2.2: NC correction using pwd rep 

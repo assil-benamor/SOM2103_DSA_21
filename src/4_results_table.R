@@ -51,13 +51,14 @@ data <- data %>% setnames(old = c("buul", "solid_apartment", "unfinished", "make
 data <- data %>% select(localisation_region_label,c(settlement_type:site_duration_score))
 
 
+
 res <- generate_results_table(data = data,
                               questions = questions,
                               choices = choices,
                               weights.column = NULL,
                               use_labels = T,
                               labels_column = "label::English (en)",
-                             
+                              "localisation_region_label"
 
 )
 
