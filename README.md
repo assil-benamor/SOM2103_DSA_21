@@ -80,9 +80,9 @@ This project contains the aggregation and analysis scripts of the 2021 DSA.
     - [x] Skip logic
     - [x] GPS coordinates
 - [x] Indicators
-- [ ] Output production
+- [x] Output production
     - [x] Results table
-    - [ ] InDesign Data Merge
+    - [x] InDesign Data Merge
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
